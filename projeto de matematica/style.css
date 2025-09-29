@@ -1,0 +1,220 @@
+body {
+  background: linear-gradient(to top, #87ceeb, #e0f7ff);
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+#placar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  z-index: 100;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.tela-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+  text-align: center;
+}
+
+#tela-game-over {
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+}
+
+#tela-inicial {
+  background-color: transparent;
+}
+
+.tela-conteudo {
+  padding: 40px 60px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+#tela-game-over .tela-conteudo {
+  background: linear-gradient(to bottom, #87ceeb, #5cacee);
+  border: 3px solid white;
+}
+
+#tela-inicial .tela-conteudo {
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(5px);
+  color: #003366;
+}
+
+#tela-inicial h1 {
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.7);
+}
+
+#tela-inicial p {
+  text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+}
+
+
+.tela-conteudo h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+.tela-conteudo h2 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.tela-conteudo p {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.tela-conteudo button {
+  padding: 15px 30px;
+  font-size: 1.5em;
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  background-color: #ff6347; /* Tomato */
+  color: white;
+  font-weight: bold;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.tela-conteudo button:hover {
+  transform: scale(1.05);
+  background-color: #ff4500; /* OrangeRed */
+}
+
+.balao {
+  width: 60px;
+  height: 80px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  position: absolute;
+  bottom: -120px;
+  animation: subir 8s linear forwards, balancar 3s ease-in-out infinite alternate;
+  cursor: pointer;
+}
+
+.balao::after {
+  content: "";
+  position: absolute;
+  bottom: -50px;
+  left: 50%;
+  width: 2px;
+  height: 50px;
+  background: #555;
+  transform: translateX(-50%);
+}
+
+@keyframes subir {
+  from { bottom: -120px; opacity: 1; }
+  to { bottom: 100vh; opacity: 0.9; }
+}
+
+@keyframes balancar {
+  from { transform: translateX(-10px); }
+  to   { transform: translateX(10px); }
+}
+
+@keyframes explodir {
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(2); opacity: 0; }
+}
+
+.particula {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0.8;
+  animation: cair 0.8s ease-out forwards;
+}
+
+@keyframes cair {
+  to {
+    transform: translateY(60px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.nuvem {
+  width: 200px;
+  height: 60px;
+  background: #fff;
+  border-radius: 200px;
+  position: absolute;
+  opacity: 0.7;
+  z-index: 1; 
+}
+
+.nuvem::before,
+.nuvem::after {
+  content: '';
+  position: absolute;
+  background: #fff;
+  width: 100px;
+  height: 80px;
+  border-radius: 50%;
+  top: -40px;
+  left: 40px;
+}
+
+.nuvem::after {
+  width: 120px;
+  height: 90px;
+  top: -50px;
+  left: auto;
+  right: 50px;
+}
+
+.nuvem1 {
+  top: 15%;
+  animation: mover-para-direita 25s linear infinite;
+}
+
+.nuvem2 {
+  top: 30%;
+  transform: scale(0.8);
+  animation: mover-para-esquerda 30s linear infinite;
+}
+
+.nuvem3 {
+  top: 50%;
+  transform: scale(1.1);
+  animation: mover-para-direita 20s linear infinite;
+}
+
+.nuvem4 {
+  top: 70%;
+  transform: scale(0.7);
+  animation: mover-para-esquerda 35s linear infinite;
+}
+
+@keyframes mover-para-direita {
+  from { left: -250px; }
+  to { left: 100vw; }
+}
+
+@keyframes mover-para-esquerda {
+  from { left: 100vw; }   
+  to { left: -250px; }
+}

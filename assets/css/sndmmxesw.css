@@ -1,0 +1,82 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #8A63D2; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.cadastro {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.cadastro h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.cadastro input[type="text"],
+.cadastro input[type="email"],
+.cadastro input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    background-color: #f7f7f7;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.cadastro input[type="text"]:focus,
+.cadastro input[type="email"]:focus,
+.cadastro input[type="password"]:focus {
+    outline: none;
+    border-color: #8A63D2;
+}
+
+.cadastro button {
+    width: 100%;
+    padding: 15px;
+    background-color: #8A63D2;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.cadastro button:hover {
+    background-color: #734bbd;
+}
+
+.cadastrado {
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.cadastrado a {
+    color: #8A63D2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.cadastrado a:hover {
+    text-decoration: underline;
+}

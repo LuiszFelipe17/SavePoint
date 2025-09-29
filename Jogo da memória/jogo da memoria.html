@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Memória</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<img src="assets/logo.png" id="logo">
+    <main id="container-telas">
+
+        <div id="tela-inicial" class="tela">
+            <div class="container-conteudo">
+                <h1>JOGO DA MEMÓRIA</h1>
+                <h2>Escolha um tema para começar:</h2>
+                <div class="selecao-tema">
+                    <div class="botao-tema" data-tema="geometria">Geometria</div>
+                    <div class="botao-tema" data-tema="animais">Animais</div>
+                    <div class="botao-tema" data-tema="espaco">Espaço</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tela-dificuldade" class="tela oculto">
+            <div class="container-conteudo">
+                <h1>JOGO DA MEMÓRIA</h1>
+                <h2>Escolha a dificuldade:</h2>
+                <div class="selecao-dificuldade">
+                    <div class="botao-dificuldade" data-dificuldade="facil">Fácil</div>
+                    <div class="botao-dificuldade" data-dificuldade="medio">Médio</div>
+                    <div class="botao-dificuldade" data-dificuldade="dificil">Difícil</div>
+                </div>
+                <button id="botao-voltar-tema" class="botao-voltar">Voltar</button>
+            </div>
+        </div>
+
+        <div id="tela-jogo" class="tela oculto">
+            <div class="container-conteudo">
+                <div id="timer">Tempo: 00:00</div>
+                <div class="tabuleiro-jogo"></div>
+                <button id="botao-voltar-jogo" class="botao-voltar">Voltar</button>
+            </div>
+        </div>
+
+        <div id="tela-fim-tempo" class="tela oculto">
+            <div class="container-conteudo">
+                <h1>Tempo Esgotado!</h1>
+                <button id="botao-reiniciar-tempo" class="botao-voltar">Jogar Novamente</button>
+            </div>
+        </div>
+
+        <div id="tela-vitoria" class="tela oculto">
+            <div class="container-conteudo">
+                <h1>Parabéns, você venceu!</h1>
+                <button id="botao-reiniciar-vitoria" class="botao-voltar">Jogar Novamente</button>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
