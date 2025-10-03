@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>SavePoint • Meu Perfil</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/profile.css" />
+</head>
+<body>
+  <header class="sp-header">
+    <div class="container">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <span class="brand-text">SavePoint</span>
+      </div>
+      <div class="userbox">
+        <a class="btn btn-ghost" href="../dashboard/">Voltar</a>
+        <button id="sp-logout" class="btn btn-ghost">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="sp-main">
+    <section class="container">
+      <h1 class="title">Meu Perfil</h1>
+      <p class="subtitle">Atualize suas informações de exibição e foto de perfil.</p>
+
+      <div class="profile-grid">
+        <div class="card">
+          <div class="avatar-large" id="avatar-box">
+            <img id="avatar-img" alt="avatar" />
+            <div id="avatar-fallback">SP</div>
+          </div>
+          <form id="avatar-form" enctype="multipart/form-data">
+            <input type="file" id="avatar-input" name="avatar" accept="image/png,image/jpeg,image/webp" />
+            <button type="submit" class="btn btn-primary">Salvar foto</button>
+            <div class="form-msg" id="avatar-msg" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <div class="card">
+          <form id="profile-form">
+            <div class="field">
+              <label for="display-name">Nome de exibição</label>
+              <input type="text" id="display-name" name="display_name" maxlength="60" required />
+            </div>
+            <div class="field two">
+              <div>
+                <label>Usuário</label>
+                <input type="text" id="username" disabled />
+              </div>
+              <div>
+                <label>E-mail</label>
+                <input type="email" id="email" disabled />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar alterações</button>
+            <div class="form-msg" id="profile-msg" aria-live="polite"></div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="sp-footer">
+    <div class="container">
+      <p>SavePoint — Aprendendo brincando</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/profile.js"></script>
+</body>
+</html>

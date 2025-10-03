@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>SavePoint • Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+</head>
+<body>
+  <header class="sp-header">
+    <div class="container">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <span class="brand-text">SavePoint</span>
+      </div>
+
+      <div class="userbox">
+        <div class="user-info">
+          <span class="user-greet">Olá, <strong id="sp-username">Jogador</strong>!</span>
+          <button id="sp-logout" class="btn btn-ghost" title="Sair">Sair</button>
+        </div>
+        <div id="sp-avatar" class="avatar" aria-label="avatar"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="sp-main">
+    <section class="container">
+      <h1 class="title">Escolha sua próxima aventura 🎮</h1>
+      <p class="subtitle">Aprender pode (e deve!) ser divertido. Selecione um jogo ou ajuste seu perfil.</p>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card-illustration">🧠</div>
+          <div class="card-content">
+            <h3>Jogo da Memória</h3>
+            <p>Treine sua memória com temas educativos como animais, formas e espaço.</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="../memory/">Jogar</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-illustration">🎈</div>
+          <div class="card-content">
+            <h3>Balão Matemático</h3>
+            <p>Estoure o balão com o resultado correto antes que ele voe para longe!</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="../math/">Jogar</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-illustration">🖼️</div>
+          <div class="card-content">
+            <h3>Meu Perfil</h3>
+            <p>Atualize seu nome de exibição e a sua foto de perfil.</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn" href="../profile/">Abrir perfil</a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-illustration">🏆</div>
+          <div class="card-content">
+            <h3>Ranking</h3>
+            <p>Veja o Top 10–50 de jogadores e acompanhe sua evolução.</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn" href="../leaderboard/">Ver ranking</a>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="sp-footer">
+    <div class="container">
+      <p>SavePoint — Aprendendo brincando ✨</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/dashboard.js"></script>
+</body>
+</html>

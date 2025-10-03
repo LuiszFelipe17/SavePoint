@@ -41,7 +41,7 @@
           return;
         }
         setMsg(msg, 'Cadastro realizado! Redirecionando…', true);
-        setTimeout(() => { window.location.href = '../memory/'; }, 600);
+        setTimeout(() => { window.location.href = '../dashboard/'; }, 600);
       });
     }
   }
@@ -62,7 +62,7 @@
           return;
         }
         setMsg(msg, 'Login realizado! Redirecionando…', true);
-        setTimeout(() => { window.location.href = '../memory/'; }, 400);
+        setTimeout(() => { window.location.href = '../dashboard/'; }, 400);
       });
     }
   }
