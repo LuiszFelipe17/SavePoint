@@ -22,7 +22,4 @@ Plataforma de jogos educativos (alfabetização e raciocínio) para crianças.
 - **users**: `id, username*, email*, password_hash, created_at...`
 - **user_profile**: `user_id (PK/FK), display_name, avatar_url...`
 - **games**: `id, code*, name`
-- **game_session**: `id, user_id (FK), game_id (FK), theme, difficulty, score, started_at, ended_at...`
-
-> `theme` ∈ {`geometria`, `animais`, `espaco`}  
-> `difficulty` ∈ {`facil`, `medio`, `dificil`}
+- **game_session**: `id, user_id (FK), game_id (FK), score, started_at, ended_at...`
