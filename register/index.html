@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar conta</title>
-    <link rel="stylesheet" href="../assets/css/sndmmxesw.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Criar conta</title>
+  <link rel="stylesheet" href="../assets/css/sndmmxesw.css"/>
 </head>
 <body>
+  <div class="cadastro">
+    <h1>Nova Conta</h1>
 
-    <div class="cadastro">
-        <h1>Nova Conta</h1>
-        <form>
-            <input type="text" placeholder="Nome de usuário" required>
-            <input type="email" placeholder="E-mail" required>
-            <input type="password" placeholder="Senha" required>
-            <input type="password" placeholder="Confirmar Senha" required>
-            
-            <button type="submit">CADASTRAR</button>
-        </form>
+    <form id="register-form" method="post" novalidate>
+      <input type="text"     name="username" id="reg-username" placeholder="Nome de usuário" required />
+      <input type="email"    name="email"    id="reg-email"    placeholder="E-mail" required />
+      <input type="password" name="password" id="reg-password" placeholder="Senha" required minlength="6"/>
+      <input type="password" name="confirm"  id="reg-confirm"  placeholder="Confirmar Senha" required minlength="6"/>
 
-        <div class="cadastrado">
-            <p>Já tem uma conta? <a href="../login">Faça login</a></p>
-        </div>
+      <button type="submit">CADASTRAR</button>
+      <div class="form-msg" aria-live="polite"></div>
+    </form>
+
+    <div class="cadastrado">
+      <p>Já tem uma conta? <a href="../login/">Faça login</a></p>
     </div>
+  </div>
 
+  <script src="../assets/js/auth.js"></script>
 </body>
 </html>
