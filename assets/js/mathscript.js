@@ -7,7 +7,9 @@ const botaoTentarNovamente = document.getElementById('botao-tentar-novamente');
 const placarElemento = document.getElementById('placar');
 const pontuacaoFinalElemento = document.getElementById('pontuacao-final');
 const botaoNivelSoma = document.getElementById('nivel-soma');
+const botaoNivelSubtracao = document.getElementById('nivel-subtracao');
 const botaoNivelMultiplicacao = document.getElementById('nivel-multiplicacao');
+const botaoNivelDivisao = document.getElementById('nivel-divisao');
 
 const problemaContainer = document.createElement('div');
 problemaContainer.style.position = 'absolute';
@@ -62,11 +64,23 @@ function gerarNovaConta() {
     num2 = Math.floor(Math.random() * 20) + 1;
     respostaCorreta = num1 + num2;
     problemaContainer.textContent = `${num1} + ${num2} = ?`;
+  } else if (nivelSelecionado === "subtracao") {
+    num1 = Math.floor(Math.random() * 20) + 10;
+    num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+    respostaCorreta = num1 - num2;
+    problemaContainer.textContent = `${num1} - ${num2} = ?`;
   } else if (nivelSelecionado === "multiplicacao") {
     num1 = Math.floor(Math.random() * 10) + 1;
     num2 = Math.floor(Math.random() * 10) + 1;
     respostaCorreta = num1 * num2;
     problemaContainer.textContent = `${num1} × ${num2} = ?`;
+  } else if (nivelSelecionado === "divisao") {
+    const divisor = Math.floor(Math.random() * 9) + 2;
+    const quociente = Math.floor(Math.random() * 10) + 1;
+    num1 = divisor * quociente;
+    num2 = divisor;
+    respostaCorreta = quociente;
+    problemaContainer.textContent = `${num1} ÷ ${num2} = ?`;
   }
 }
 
@@ -126,12 +140,11 @@ function criarBalao(numero) {
       score++;
       placarElemento.textContent = `Pontos: ${score}`;
 
-      // 🔹 Aplica efeito de brilho na conta
       problemaContainer.classList.add("brilho");
       setTimeout(() => problemaContainer.classList.remove("brilho"), 600);
 
       balaoCorretoElemento = null;
-      if (!isGameOver) iniciarRodada(); // sem delay
+      if (!isGameOver) iniciarRodada();
     }
   });
 
@@ -153,7 +166,16 @@ function iniciarRodada() {
   const numeroDeBaloes = 5;
   const opcoesDeResposta = new Set([respostaCorreta]);
   while(opcoesDeResposta.size < numeroDeBaloes) {
-      const maxRandom = (nivelSelecionado === "soma" ? 40 : 100);
+      let maxRandom;
+      if (nivelSelecionado === "soma") {
+        maxRandom = 40;
+      } else if (nivelSelecionado === "subtracao") {
+        maxRandom = 30;
+      } else if (nivelSelecionado === "multiplicacao") {
+        maxRandom = 100;
+      } else if (nivelSelecionado === "divisao") {
+        maxRandom = 20;
+      }
       const numeroAleatorio = Math.floor(Math.random() * maxRandom) + 1;
       opcoesDeResposta.add(numeroAleatorio);
   }
@@ -179,8 +201,18 @@ botaoNivelSoma.addEventListener('click', () => {
   startGame();
 });
 
+botaoNivelSubtracao.addEventListener('click', () => {
+  nivelSelecionado = "subtracao";
+  startGame();
+});
+
 botaoNivelMultiplicacao.addEventListener('click', () => {
   nivelSelecionado = "multiplicacao";
+  startGame();
+});
+
+botaoNivelDivisao.addEventListener('click', () => {
+  nivelSelecionado = "divisao";
   startGame();
 });
 
