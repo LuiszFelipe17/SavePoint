@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete a Palavra</title>
+    <link rel="stylesheet" href="portuguestyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+    <a href="#" class="exit-game-icon" title="Sair do Jogo">
+        <i class="fas fa-right-from-bracket"></i>
+    </a>
+
+    <main class="game-container">
+        <header class="game-header">
+            <div class="icon-wrapper">
+                <i class="fas fa-pencil-alt"></i>
+            </div>
+            <h1>Complete a Palavra!</h1>
+        </header>
+
+        <section class="info-bar">
+            <span><i class="far fa-star"></i> Pontuação: <span id="score-value">0</span></span>
+            <span><i class="far fa-clock"></i> Tempo: <span id="timer-value">60</span></span>
+        </section>
+
+        <section class="word-puzzle" id="word-container">
+            </section>
+
+        <div class="hint-box">
+            Dica: <span id="hint-text">Carregando...</span>
+        </div>
+
+        <section class="letter-bank" id="letter-bank-container">
+            </section>
+
+        <footer class="action-buttons">
+            <button class="btn btn-hint">
+                <i class="fas fa-question-circle"></i>
+                Pedir Dica
+            </button>
+            <button class="btn btn-skip">
+                <i class="fas fa-redo"></i>
+                Pular Palavra
+            </button>
+            <button class="btn btn-verify">
+                <i class="fas fa-check"></i>
+                Verificar
+            </button>
+        </footer>
+    </main>
+
+    <script src="portugescript.js"></script>
+</body>
+</html>
