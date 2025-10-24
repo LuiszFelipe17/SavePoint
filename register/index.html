@@ -3,20 +3,64 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Criar conta</title>
+  <title>Criar Conta - SavePoint</title>
   <link rel="stylesheet" href="../assets/css/sndmmxesw.css"/>
+  <link rel="stylesheet" href="../assets/css/auth-enhanced.css"/>
+  <link rel="stylesheet" href="../assets/css/auth-fix.css"/>
 </head>
 <body>
   <div class="cadastro">
     <h1>Nova Conta</h1>
 
-    <form id="register-form" method="post" novalidate>
-      <input type="text"     name="username" id="reg-username" placeholder="Nome de usuário" required />
-      <input type="email"    name="email"    id="reg-email"    placeholder="E-mail" required />
-      <input type="password" name="password" id="reg-password" placeholder="Senha" required minlength="6"/>
-      <input type="password" name="confirm"  id="reg-confirm"  placeholder="Confirmar Senha" required minlength="6"/>
+    <form id="register-form" method="post" novalidate autocomplete="on">
+      <!-- Nome de usuário -->
+      <input
+        type="text"
+        name="username"
+        id="reg-username"
+        placeholder="Nome de usuário (3-30 caracteres)"
+        autocomplete="username"
+        required
+      />
 
-      <button type="submit">CADASTRAR</button>
+      <!-- E-mail -->
+      <input
+        type="email"
+        name="email"
+        id="reg-email"
+        placeholder="E-mail"
+        autocomplete="email"
+        required
+      />
+
+      <!-- Senha com toggle e indicador de força -->
+      <div class="password-wrapper">
+        <input
+          type="password"
+          name="password"
+          id="reg-password"
+          placeholder="Senha (mínimo 8 caracteres)"
+          autocomplete="new-password"
+          required
+          minlength="8"
+        />
+      </div>
+      <!-- Indicador de força será inserido aqui via JS -->
+
+      <!-- Confirmar senha com toggle -->
+      <div class="password-wrapper">
+        <input
+          type="password"
+          name="confirm"
+          id="reg-confirm"
+          placeholder="Confirmar senha"
+          autocomplete="new-password"
+          required
+          minlength="8"
+        />
+      </div>
+
+      <button type="submit" id="register-button">CADASTRAR</button>
       <div class="form-msg" aria-live="polite"></div>
     </form>
 
@@ -25,6 +69,24 @@
     </div>
   </div>
 
+  <!-- Scripts -->
+  <script src="../assets/js/password-strength.js"></script>
+  <script src="../assets/js/form-validation.js"></script>
   <script src="../assets/js/auth.js"></script>
+  <script>
+    // Inicializar funcionalidades após DOM carregar
+    document.addEventListener('DOMContentLoaded', function() {
+      // Botão de mostrar/ocultar senha
+      initPasswordToggles();
+
+      // Indicador de força de senha
+      initPasswordStrength('#reg-password');
+
+      // Validação em tempo real
+      initUsernameValidation('#reg-username');
+      initEmailValidation('#reg-email');
+      initPasswordConfirmation('#reg-password', '#reg-confirm');
+    });
+  </script>
 </body>
 </html>

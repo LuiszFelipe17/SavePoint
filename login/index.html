@@ -3,26 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login</title>
+  <title>Login - SavePoint</title>
   <link rel="stylesheet" href="../assets/css/vemukeolr.css" />
+  <link rel="stylesheet" href="../assets/css/auth-enhanced.css" />
+  <link rel="stylesheet" href="../assets/css/auth-fix.css" />
 </head>
 <body>
   <div class="login">
     <h1>LOGIN</h1>
 
-    <form id="login-form" method="post" novalidate>
-      <input type="text" name="identifier" id="login-identifier" placeholder="Usuário ou e-mail" required />
-      <input type="password" name="password" id="login-password" placeholder="Senha" required />
-      
+    <form id="login-form" method="post" novalidate autocomplete="on">
+      <!-- Usuário ou E-mail -->
+      <input
+        type="text"
+        name="identifier"
+        id="login-identifier"
+        placeholder="Usuário ou e-mail"
+        autocomplete="username"
+        required
+      />
+
+      <!-- Senha com botão de toggle -->
+      <div class="password-wrapper">
+        <input
+          type="password"
+          name="password"
+          id="login-password"
+          placeholder="Senha"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <!-- Lembrar-me -->
+      <div class="remember-me-container">
+        <input
+          type="checkbox"
+          id="login-remember"
+          name="remember"
+        />
+        <label for="login-remember">Lembrar-me por 30 dias</label>
+      </div>
+
       <div class="esqueci">
         <a href="../register/">Não tem conta?</a>
       </div>
 
-      <button type="submit">LOGIN</button>
+      <button type="submit" id="login-button">LOGIN</button>
       <div class="form-msg" aria-live="polite"></div>
     </form>
   </div>
 
+  <!-- Scripts -->
+  <script src="../assets/js/form-validation.js"></script>
   <script src="../assets/js/auth.js"></script>
+  <script>
+    // Inicializar botão de mostrar/ocultar senha
+    document.addEventListener('DOMContentLoaded', function() {
+      initPasswordToggles();
+    });
+  </script>
 </body>
 </html>

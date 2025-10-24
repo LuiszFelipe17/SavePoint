@@ -1,0 +1,46 @@
+# SavePoint - Git Ignore
+
+# Arquivos de Configuração Sensíveis
+.env
+config.php.backup
+
+# Uploads de Usuários
+uploads/*
+!uploads/index.html
+!uploads/.htaccess
+
+# Logs
+*.log
+logs/
+api/logs/
+
+# Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores / IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+
+# Dependências (se adicionar no futuro)
+/vendor/
+/node_modules/
+composer.lock
+package-lock.json
+
+# Cache
+*.cache
+cache/
+tmp/
+
+# Backups
+*.bak
+*.backup
+*.old
+*.orig

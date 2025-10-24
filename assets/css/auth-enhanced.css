@@ -1,0 +1,363 @@
+/**
+ * SavePoint - Estilos Aprimorados de Autenticação
+ *
+ * Melhorias:
+ * - Loading spinners
+ * - Feedback visual (bordas verdes/vermelhas)
+ * - Botão mostrar/ocultar senha
+ * - Indicador de força de senha
+ * - Animações suaves
+ * - Checkbox "lembrar-me"
+ */
+
+/* === Loading Spinner === */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #8A63D2;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === Password Toggle (Mostrar/Ocultar Senha) === */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* Garantir que input dentro do wrapper ocupe 100% */
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+  width: 100% !important;
+  padding-right: 50px !important;
+  margin-bottom: 0 !important; /* Remove margin do input, o wrapper já tem */
+  box-sizing: border-box;
+  display: block;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #666;
+  padding: 5px;
+  transition: color 0.2s;
+  z-index: 10;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.password-toggle:hover {
+  color: #8A63D2;
+  background: none;
+}
+
+.password-toggle:focus {
+  outline: 2px solid #8A63D2;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Prevenir estilos de botão de formulário */
+.password-toggle:active {
+  background: none !important;
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* === Indicador de Força de Senha === */
+.password-strength-container {
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 15px;
+}
+
+.password-strength-bar {
+  height: 4px;
+  background-color: #e0e0e0;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.password-strength-fill {
+  height: 100%;
+  width: 0%;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.password-strength-fill.weak {
+  width: 25%;
+  background-color: #f44336;
+}
+
+.password-strength-fill.medium {
+  width: 50%;
+  background-color: #ff9800;
+}
+
+.password-strength-fill.good {
+  width: 75%;
+  background-color: #ffc107;
+}
+
+.password-strength-fill.strong {
+  width: 100%;
+  background-color: #4caf50;
+}
+
+.password-strength-text {
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.strength-label {
+  font-weight: 600;
+}
+
+.strength-label.weak { color: #f44336; }
+.strength-label.medium { color: #ff9800; }
+.strength-label.good { color: #ffc107; }
+.strength-label.strong { color: #4caf50; }
+
+/* === Feedback Visual de Validação === */
+input.valid {
+  border-color: #4caf50 !important;
+  background-color: #f1f8f4 !important;
+}
+
+input.invalid {
+  border-color: #f44336 !important;
+  background-color: #fff5f5 !important;
+}
+
+input.validating {
+  border-color: #2196f3 !important;
+}
+
+/* Ícones de validação */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.validation-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  pointer-events: none;
+}
+
+.validation-icon.success {
+  color: #4caf50;
+}
+
+.validation-icon.error {
+  color: #f44336;
+}
+
+/* === Checkbox "Lembrar-me" === */
+.remember-me-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.remember-me-container input[type="checkbox"] {
+  width: auto;
+  margin: 0 8px 0 0;
+  padding: 0;
+  cursor: pointer;
+  accent-color: #8A63D2;
+}
+
+.remember-me-container label {
+  cursor: pointer;
+  user-select: none;
+  color: #555;
+}
+
+/* === Mensagens de Erro/Sucesso Aprimoradas === */
+.form-msg {
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-top: 15px;
+  font-size: 14px;
+  line-height: 1.5;
+  display: none;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-msg.show {
+  display: block;
+}
+
+.form-msg.error {
+  background-color: #ffebee;
+  color: #c62828;
+  border-left: 4px solid #f44336;
+}
+
+.form-msg.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 4px solid #4caf50;
+}
+
+.form-msg.info {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border-left: 4px solid #2196f3;
+}
+
+/* Lista de erros */
+.form-msg ul {
+  margin: 8px 0 0 0;
+  padding-left: 20px;
+}
+
+.form-msg li {
+  margin-bottom: 4px;
+}
+
+/* === Botão com Loading === */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.loading {
+  position: relative;
+  color: transparent;
+}
+
+button.loading::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 50%;
+  left: 50%;
+  margin-left: -8px;
+  margin-top: -8px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* === Transições Suaves === */
+input,
+button,
+.password-toggle {
+  transition: all 0.2s ease;
+}
+
+input:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(138, 99, 210, 0.15);
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(138, 99, 210, 0.2);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(138, 99, 210, 0.2);
+}
+
+/* === Correção para forms .cadastro e .login === */
+.cadastro .password-wrapper,
+.login .password-wrapper {
+  display: block;
+  position: relative;
+}
+
+/* Garantir que botão de submit não pegue estilos de toggle */
+.cadastro button[type="submit"],
+.login button[type="submit"] {
+  position: static !important;
+  transform: none !important;
+  width: 100% !important;
+  padding: 15px !important;
+  margin-top: 0;
+  right: auto !important;
+  top: auto !important;
+  z-index: 1 !important;
+}
+
+/* === Responsividade Mobile === */
+@media (max-width: 480px) {
+  .password-toggle {
+    right: 10px;
+    font-size: 16px;
+  }
+
+  .validation-icon {
+    right: 10px;
+    font-size: 16px;
+  }
+
+  .password-strength-text {
+    font-size: 11px;
+  }
+
+  .remember-me-container {
+    font-size: 13px;
+  }
+}
+
+/* === Acessibilidade === */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Foco visível para navegação por teclado */
+*:focus-visible {
+  outline: 2px solid #8A63D2;
+  outline-offset: 2px;
+}

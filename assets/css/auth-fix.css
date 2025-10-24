@@ -1,0 +1,138 @@
+/**
+ * SavePoint - Correção CSS para Página de Cadastro/Login
+ *
+ * Este arquivo corrige conflitos entre os estilos originais e os novos
+ */
+
+/* === RESET IMPORTANTE para .cadastro e .login === */
+
+/* Garantir que password-wrapper seja apenas um container */
+.cadastro .password-wrapper,
+.login .password-wrapper {
+  position: relative !important;
+  width: 100% !important;
+  display: block !important;
+  margin-bottom: 15px !important;
+  padding: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Input de senha deve ser visível e ocupar todo o espaço */
+.cadastro .password-wrapper input[type="password"],
+.cadastro .password-wrapper input[type="text"],
+.login .password-wrapper input[type="password"],
+.login .password-wrapper input[type="text"] {
+  /* Forçar visibilidade */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  /* Tamanho correto */
+  width: 100% !important;
+  max-width: 100% !important;
+
+  /* Espaçamento */
+  padding: 15px !important;
+  padding-right: 50px !important;
+  margin: 0 !important;
+
+  /* Visual */
+  background-color: #f7f7f7 !important;
+  border: 1px solid #ddd !important;
+  border-radius: 6px !important;
+  box-sizing: border-box !important;
+
+  /* Texto */
+  font-size: 16px !important;
+  color: #333 !important;
+
+  /* Posicionamento */
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Botão de toggle deve estar SOBRE o input, mas só no canto */
+.cadastro .password-wrapper .password-toggle,
+.login .password-wrapper .password-toggle {
+  /* Posicionamento absoluto */
+  position: absolute !important;
+  right: 12px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+
+  /* Tamanho mínimo */
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+
+  /* Reset de estilos de botão */
+  padding: 0 !important;
+  margin: 0 !important;
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  /* Aparência */
+  cursor: pointer !important;
+  font-size: 18px !important;
+  color: #666 !important;
+
+  /* Camada superior */
+  z-index: 10 !important;
+
+  /* Display */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cadastro .password-wrapper .password-toggle:hover,
+.login .password-wrapper .password-toggle:hover {
+  color: #8A63D2 !important;
+  background: none !important;
+}
+
+/* Garantir que o botão de submit seja normal */
+.cadastro button[type="submit"],
+.login button[type="submit"] {
+  position: static !important;
+  transform: none !important;
+  width: 100% !important;
+  height: auto !important;
+  padding: 15px !important;
+  margin-bottom: 20px !important;
+  background-color: #8A63D2 !important;
+  color: white !important;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  z-index: 1 !important;
+}
+
+/* Inputs normais (username, email) */
+.cadastro input[type="text"]:not(.password-wrapper input),
+.cadastro input[type="email"],
+.login input[type="text"]:not(.password-wrapper input),
+.login input[type="email"] {
+  width: 100% !important;
+  padding: 15px !important;
+  margin-bottom: 15px !important;
+  border: 1px solid #ddd !important;
+  background-color: #f7f7f7 !important;
+  border-radius: 6px !important;
+  box-sizing: border-box !important;
+  font-size: 16px !important;
+}
+
+/* Indicador de força de senha */
+.password-strength-container {
+  width: 100% !important;
+  margin-top: 5px !important;
+  margin-bottom: 15px !important;
+  display: block !important;
+}
