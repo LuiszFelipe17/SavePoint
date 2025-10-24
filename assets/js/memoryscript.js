@@ -21,8 +21,22 @@ let paresEncontrados = 0;
 let totalPares = 0;
 
 let temaSelecionado;
+let dificuldadeAtual;
 let timerInterval;
 let tempoRestante;
+let tempoInicial;
+let usuarioLogado = null;
+
+// Gerenciador de áudio
+const audioManager = new AudioManager();
+
+// Carregar sons
+audioManager.loadSound('flip', '../assets/sounds/card-flip.mp3');
+audioManager.loadSound('match', '../assets/sounds/match-success.mp3');
+audioManager.loadSound('fail', '../assets/sounds/match-fail.mp3');
+audioManager.loadSound('victory', '../assets/sounds/victory.mp3');
+audioManager.loadSound('warning', '../assets/sounds/time-warning.mp3');
+audioManager.loadSound('timeout', '../assets/sounds/timeout.mp3');
 
 const temas = {
     geometria: [
@@ -57,6 +71,80 @@ const temas = {
     ]
 };
 
+// Verificar autenticação
+async function verificarAutenticacao() {
+    try {
+        const res = await fetch('../api/game_auth.php', { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (!data || !data.authenticated) {
+            window.location.href = '../login/';
+            return null;
+        }
+
+        return data;
+    } catch (err) {
+        console.error('Erro ao verificar autenticação:', err);
+        window.location.href = '../login/';
+        return null;
+    }
+}
+
+// Calcular pontos baseado em dificuldade e tempo
+function calcularPontos(dificuldade, tempoGasto) {
+    const pontosPorDificuldade = {
+        facil: 50,
+        medio: 100,
+        dificil: 200
+    };
+
+    const pontos = pontosPorDificuldade[dificuldade] || 50;
+
+    // Bônus de tempo (quanto mais rápido, mais pontos)
+    const limitesTempo = { facil: 180, medio: 120, dificil: 60 };
+    const tempoRestanteAtual = limitesTempo[dificuldade] - tempoGasto;
+    const bonus = Math.max(0, Math.floor(tempoRestanteAtual * 0.5));
+
+    return pontos + bonus;
+}
+
+// Calcular duração da partida
+function calcularDuracao() {
+    const limitesTempo = { facil: 180, medio: 120, dificil: 60 };
+    return limitesTempo[dificuldadeAtual] - tempoRestante;
+}
+
+// Salvar pontuação no backend
+async function salvarPontuacao(pontos, duracao, status) {
+    try {
+        const res = await fetch('../api/game_save_score.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                game_code: 'memory',
+                score: pontos,
+                duration_seconds: duracao,
+                difficulty: dificuldadeAtual,
+                theme: temaSelecionado,
+                status: status,
+                metadata: {
+                    pairs_found: paresEncontrados,
+                    total_pairs: totalPares,
+                    time_remaining: tempoRestante
+                }
+            })
+        });
+
+        const data = await res.json();
+        console.log('Pontuação salva:', data);
+        return data;
+    } catch (err) {
+        console.error('Erro ao salvar pontuação:', err);
+        return null;
+    }
+}
+
 function mostrarTelaDificuldade(tema) {
     temaSelecionado = tema;
     telaInicial.classList.add('oculto');
@@ -64,6 +152,7 @@ function mostrarTelaDificuldade(tema) {
 }
 
 function mostrarTelaJogo(dificuldade) {
+    dificuldadeAtual = dificuldade; // Salvar dificuldade selecionada
     telaDificuldade.classList.add('oculto');
     telaJogo.classList.remove('oculto');
     iniciarJogo(temaSelecionado, dificuldade);
@@ -88,8 +177,14 @@ function iniciarTimer(dificuldade) {
         tempoRestante--;
         atualizarTimerDisplay();
 
+        // Som de alerta quando restar 1 minuto
+        if (tempoRestante === 60) {
+            audioManager.play('warning');
+        }
+
         if (tempoRestante < 0) {
             clearInterval(timerInterval);
+            audioManager.play('timeout'); // Som ao esgotar o tempo
             telaJogo.classList.add('oculto');
             telaFimTempo.classList.remove('oculto');
         }
@@ -187,6 +282,7 @@ function embaralhar(cartas) {
 function virarCarta() {
     if (travarTabuleiro || this === primeiraCarta) return;
     this.classList.add('virada');
+    audioManager.play('flip'); // Som ao virar carta
 
     if (!temCartaVirada) {
         temCartaVirada = true;
@@ -202,14 +298,23 @@ function verificarCombinacao() {
     ehCombinacao ? desabilitarCartas() : desvirarCartas();
 }
 
-function desabilitarCartas() {
+async function desabilitarCartas() {
     primeiraCarta.removeEventListener('click', virarCarta);
     segundaCarta.removeEventListener('click', virarCarta);
+
+    audioManager.play('match'); // Som ao encontrar par correto
 
     paresEncontrados++;
     if (paresEncontrados === totalPares) {
         clearInterval(timerInterval);
+
+        // Salvar pontuação
+        const duracaoSegundos = calcularDuracao();
+        const pontos = calcularPontos(dificuldadeAtual, duracaoSegundos);
+        await salvarPontuacao(pontos, duracaoSegundos, 'completed');
+
         setTimeout(() => {
+            audioManager.play('victory'); // Som de vitória
             telaJogo.classList.add('oculto');
             telaVitoria.classList.remove('oculto');
         }, 500);
@@ -220,6 +325,7 @@ function desabilitarCartas() {
 
 function desvirarCartas() {
     travarTabuleiro = true;
+    audioManager.play('fail'); // Som ao errar
     setTimeout(() => {
         primeiraCarta.classList.remove('virada');
         segundaCarta.classList.remove('virada');
@@ -250,3 +356,45 @@ botaoVoltarTema.addEventListener('click', mostrarTelaInicial);
 botaoVoltarJogo.addEventListener('click', mostrarTelaInicial);
 botaoReiniciarTempo.addEventListener('click', mostrarTelaInicial);
 botaoReiniciarVitoria.addEventListener('click', mostrarTelaInicial);
+
+// Controles de Áudio
+function initAudioControls() {
+    const audioToggle = document.getElementById('audio-toggle');
+    const volumeSlider = document.getElementById('volume-slider');
+
+    if (audioToggle) {
+        // Restaurar estado do mute
+        audioToggle.textContent = audioManager.isMuted() ? '🔇' : '🔊';
+
+        audioToggle.addEventListener('click', () => {
+            const muted = audioManager.toggleMute();
+            audioToggle.textContent = muted ? '🔇' : '🔊';
+        });
+    }
+
+    if (volumeSlider) {
+        // Restaurar volume
+        volumeSlider.value = audioManager.getVolume() * 100;
+
+        // Atualizar gradiente do slider
+        function updateSliderBackground() {
+            const value = volumeSlider.value;
+            volumeSlider.style.background = `linear-gradient(to right, #8A63D2 0%, #8A63D2 ${value}%, #ddd ${value}%, #ddd 100%)`;
+        }
+
+        updateSliderBackground();
+
+        volumeSlider.addEventListener('input', () => {
+            audioManager.setVolume(volumeSlider.value / 100);
+            updateSliderBackground();
+        });
+    }
+}
+
+// Verificar autenticação ao carregar a página
+(async function init() {
+    usuarioLogado = await verificarAutenticacao();
+    if (!usuarioLogado) return;
+    console.log('Usuário autenticado:', usuarioLogado.username);
+    initAudioControls();
+})();

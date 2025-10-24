@@ -28,6 +28,63 @@ let balaoCorretoElemento = null;
 let isGameOver = false;
 let score = 0;
 let nivelSelecionado = "soma";
+let usuarioLogado = null;
+
+// Gerenciador de áudio
+const audioManager = new AudioManager();
+
+// Carregar sons
+audioManager.loadSound('pop', '../assets/sounds/balloon-pop.mp3');
+audioManager.loadSound('correct', '../assets/sounds/correct-answer.mp3');
+audioManager.loadSound('gameover', '../assets/sounds/game-over.mp3');
+
+// Verificar autenticação
+async function verificarAutenticacao() {
+    try {
+        const res = await fetch('../api/game_auth.php', { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (!data || !data.authenticated) {
+            window.location.href = '../login/';
+            return null;
+        }
+
+        return data;
+    } catch (err) {
+        console.error('Erro ao verificar autenticação:', err);
+        window.location.href = '../login/';
+        return null;
+    }
+}
+
+// Salvar pontuação no backend
+async function salvarPontuacao(pontos, status) {
+    try {
+        const res = await fetch('../api/game_save_score.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                game_code: 'math',
+                score: pontos,
+                duration_seconds: null,
+                operation_type: nivelSelecionado,
+                status: status,
+                metadata: {
+                    final_score: pontos,
+                    operation: nivelSelecionado
+                }
+            })
+        });
+
+        const data = await res.json();
+        console.log('Pontuação salva:', data);
+        return data;
+    } catch (err) {
+        console.error('Erro ao salvar pontuação:', err);
+        return null;
+    }
+}
 
 function startGame() {
   telaInicial.classList.add('hidden');
@@ -43,13 +100,18 @@ function startGame() {
   iniciarRodada();
 }
 
-function gameOver() {
-  if (isGameOver) return; 
+async function gameOver() {
+  if (isGameOver) return;
   isGameOver = true;
-  
+
+  audioManager.play('gameover'); // Som de game over
+
+  // Salvar pontuação
+  await salvarPontuacao(score, 'failed');
+
   pontuacaoFinalElemento.textContent = `Sua pontuação: ${score}`;
   telaGameOver.classList.remove('hidden');
-  problemaContainer.textContent = ''; 
+  problemaContainer.textContent = '';
   balaoCorretoElemento = null;
 
   setTimeout(() => {
@@ -117,6 +179,8 @@ function criarBalao(numero) {
     const clickedValue = parseInt(balao.textContent, 10);
     balao.classList.add('explodido');
 
+    audioManager.play('pop'); // Som ao clicar no balão
+
     const areaRect = areaJogo.getBoundingClientRect();
     const balaoRect = balao.getBoundingClientRect();
     const centerX = balaoRect.left + balaoRect.width / 2 - areaRect.left;
@@ -139,6 +203,8 @@ function criarBalao(numero) {
     if (clickedValue === respostaCorreta) {
       score++;
       placarElemento.textContent = `Pontos: ${score}`;
+
+      audioManager.play('correct'); // Som ao acertar
 
       problemaContainer.classList.add("brilho");
       setTimeout(() => problemaContainer.classList.remove("brilho"), 600);
@@ -220,3 +286,45 @@ botaoTentarNovamente.addEventListener('click', () => {
   telaGameOver.classList.add('hidden');
   telaNivel.classList.remove('hidden');
 });
+
+// Controles de Áudio
+function initAudioControls() {
+    const audioToggle = document.getElementById('audio-toggle');
+    const volumeSlider = document.getElementById('volume-slider');
+
+    if (audioToggle) {
+        // Restaurar estado do mute
+        audioToggle.textContent = audioManager.isMuted() ? '🔇' : '🔊';
+
+        audioToggle.addEventListener('click', () => {
+            const muted = audioManager.toggleMute();
+            audioToggle.textContent = muted ? '🔇' : '🔊';
+        });
+    }
+
+    if (volumeSlider) {
+        // Restaurar volume
+        volumeSlider.value = audioManager.getVolume() * 100;
+
+        // Atualizar gradiente do slider
+        function updateSliderBackground() {
+            const value = volumeSlider.value;
+            volumeSlider.style.background = `linear-gradient(to right, #ff6347 0%, #ff6347 ${value}%, #ddd ${value}%, #ddd 100%)`;
+        }
+
+        updateSliderBackground();
+
+        volumeSlider.addEventListener('input', () => {
+            audioManager.setVolume(volumeSlider.value / 100);
+            updateSliderBackground();
+        });
+    }
+}
+
+// Verificar autenticação ao carregar a página
+(async function init() {
+    usuarioLogado = await verificarAutenticacao();
+    if (!usuarioLogado) return;
+    console.log('Usuário autenticado:', usuarioLogado.username);
+    initAudioControls();
+})();

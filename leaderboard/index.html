@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>SavePoint • Ranking</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../assets/css/leaderboard.css" />
+</head>
+<body>
+  <header class="sp-header">
+    <div class="container">
+      <div class="brand">
+        <div class="logo-dot"></div>
+        <span class="brand-text">SavePoint</span>
+      </div>
+      <div class="userbox">
+        <a class="btn btn-ghost" href="../dashboard/">Voltar</a>
+        <button id="sp-logout" class="btn btn-ghost">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="sp-main">
+    <section class="container">
+      <h1 class="title">Ranking de Jogadores</h1>
+      <p class="subtitle">Confira os melhores jogadores da plataforma!</p>
+
+      <div class="game-tabs">
+        <button class="tab-button active" data-game="memory">
+          <span class="tab-icon">🧠</span>
+          <span class="tab-name">Jogo da Memória</span>
+        </button>
+        <button class="tab-button" data-game="math">
+          <span class="tab-icon">🎈</span>
+          <span class="tab-name">Balão Matemático</span>
+        </button>
+      </div>
+
+      <div id="loading-container" class="loading-container">
+        <div class="loading-spinner"></div>
+        <p>Carregando ranking...</p>
+      </div>
+
+      <div id="ranking-container" class="ranking-container hidden">
+        <div class="ranking-header">
+          <h2 id="game-name">Jogo da Memória</h2>
+          <p id="total-players">0 jogadores</p>
+        </div>
+
+        <div class="ranking-table">
+          <table>
+            <thead>
+              <tr>
+                <th class="col-position">#</th>
+                <th class="col-player">Jogador</th>
+                <th class="col-score">Pontuação Total</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-body">
+              <!-- Rankings serão inseridos aqui via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="pagination" class="pagination hidden">
+          <button id="prev-page" class="btn btn-page" disabled>← Anterior</button>
+          <span id="page-info">Página 1 de 1</span>
+          <button id="next-page" class="btn btn-page" disabled>Próxima →</button>
+        </div>
+
+        <div id="error-message" class="error-message hidden">
+          Erro ao carregar ranking. Tente novamente.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="sp-footer">
+    <div class="container">
+      <p>SavePoint — Aprendendo brincando</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/leaderboard.js"></script>
+</body>
+</html>

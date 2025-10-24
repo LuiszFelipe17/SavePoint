@@ -7,6 +7,12 @@
 </head>
 <body>
 
+  <!-- Controles de Áudio -->
+  <div id="audio-controls">
+    <button id="audio-toggle" class="audio-btn" title="Ligar/Desligar Som">🔊</button>
+    <input type="range" id="volume-slider" min="0" max="100" value="70" title="Volume">
+  </div>
+
   <div class="nuvem nuvem1"></div>
   <div class="nuvem nuvem2"></div>
   <div class="nuvem nuvem3"></div>
@@ -44,6 +50,7 @@
     <div id="placar">Pontos: 0</div>
   </div>
 
+  <script src="../assets/js/audio-manager.js"></script>
   <script src="../assets/js/mathscript.js"></script>
 </body>
 </html>

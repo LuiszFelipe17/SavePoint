@@ -8,6 +8,13 @@
 </head>
 <body>
 <img src="../assets/img/logo.png" id="logo">
+
+    <!-- Controles de Áudio -->
+    <div id="audio-controls">
+        <button id="audio-toggle" class="audio-btn" title="Ligar/Desligar Som">🔊</button>
+        <input type="range" id="volume-slider" min="0" max="100" value="70" title="Volume">
+    </div>
+
     <main id="container-telas">
 
         <div id="tela-inicial" class="tela">
@@ -59,6 +66,7 @@
 
     </main>
 
+    <script src="../assets/js/audio-manager.js"></script>
     <script src="../assets/js/memoryscript.js"></script>
 
 </body>
