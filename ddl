@@ -2,7 +2,7 @@
 -- SavePoint - DDL (Data Definition Language)
 -- ============================================================================
 -- Este arquivo contém a estrutura completa do banco de dados SavePoint
--- Apenas comandos de criação (CREATE) - SEM inserção de dados
+-- Comandos de criação (CREATE) + dados obrigatórios do sistema
 -- ============================================================================
 
 -- Criação do banco de dados
@@ -102,8 +102,111 @@ CREATE TABLE game_session (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
+-- Tabela: palavras_portugues
+-- ============================================================================
+-- Banco de palavras para o jogo "Complete a Palavra"
+-- Contém palavras educacionais organizadas por categoria e dificuldade
+-- ============================================================================
+CREATE TABLE palavras_portugues (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  palavra VARCHAR(30) NOT NULL,
+  dica VARCHAR(150) NOT NULL,
+  categoria VARCHAR(30) NOT NULL,
+  dificuldade ENUM('facil', 'medio', 'dificil') NOT NULL,
+  PRIMARY KEY (id),
+  KEY idx_dificuldade (dificuldade),
+  KEY idx_categoria (categoria)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================================
+-- DADOS OBRIGATÓRIOS
+-- ============================================================================
+-- Estes dados são NECESSÁRIOS para o funcionamento do sistema
+-- As APIs de pontuação e ranking dependem destes registros
+-- ============================================================================
+
+-- Jogos disponíveis na plataforma
+INSERT INTO games (code, name) VALUES
+  ('memory', 'Jogo da Memória'),
+  ('math', 'Balão Matemático'),
+  ('portuguese', 'Complete a Palavra')
+ON DUPLICATE KEY UPDATE name = VALUES(name);
+
+-- Palavras para o jogo "Complete a Palavra" (60 palavras educacionais)
+INSERT INTO palavras_portugues (palavra, dica, categoria, dificuldade) VALUES
+-- ANIMAIS (15 palavras)
+('GATO', 'Animal doméstico que faz miau', 'animais', 'facil'),
+('CACHORRO', 'Melhor amigo do homem', 'animais', 'medio'),
+('ELEFANTE', 'Maior animal terrestre com tromba', 'animais', 'dificil'),
+('GIRAFA', 'Animal de pescoço muito longo', 'animais', 'medio'),
+('MACACO', 'Animal que gosta de banana', 'animais', 'medio'),
+('TIGRE', 'Grande felino listrado', 'animais', 'facil'),
+('LEAO', 'Rei da selva', 'animais', 'facil'),
+('ZEBRA', 'Animal listrado de preto e branco', 'animais', 'facil'),
+('PANDA', 'Urso preto e branco da China', 'animais', 'facil'),
+('CORUJA', 'Ave noturna muito sábia', 'animais', 'medio'),
+('TARTARUGA', 'Animal lento com casco', 'animais', 'dificil'),
+('PINGUIM', 'Ave que não voa e vive no gelo', 'animais', 'medio'),
+('CAVALO', 'Animal usado para cavalgar', 'animais', 'medio'),
+('COELHO', 'Animal que pula e tem orelhas longas', 'animais', 'medio'),
+('PAPAGAIO', 'Ave colorida que pode falar', 'animais', 'dificil'),
+
+-- OBJETOS (15 palavras)
+('CADEIRA', 'Móvel para sentar', 'objetos', 'medio'),
+('MESA', 'Móvel para estudar ou comer', 'objetos', 'facil'),
+('LAPIS', 'Usado para escrever e desenhar', 'objetos', 'facil'),
+('LIVRO', 'Objeto com páginas para ler', 'objetos', 'facil'),
+('RELOGIO', 'Mostra as horas', 'objetos', 'medio'),
+('TELEFONE', 'Aparelho para fazer ligações', 'objetos', 'dificil'),
+('COMPUTADOR', 'Máquina eletrônica para trabalhar', 'objetos', 'dificil'),
+('BICICLETA', 'Veículo de duas rodas', 'objetos', 'dificil'),
+('TESOURA', 'Ferramenta para cortar papel', 'objetos', 'medio'),
+('BORRACHA', 'Apaga o que está escrito a lápis', 'objetos', 'dificil'),
+('CADERNO', 'Conjunto de folhas para escrever', 'objetos', 'medio'),
+('MOCHILA', 'Bolsa usada nas costas', 'objetos', 'medio'),
+('PORTA', 'Abre e fecha a entrada', 'objetos', 'facil'),
+('JANELA', 'Por onde entra luz e ar', 'objetos', 'medio'),
+('ESPELHO', 'Reflete nossa imagem', 'objetos', 'medio'),
+
+-- NATUREZA (10 palavras)
+('FLOR', 'Parte colorida e bonita da planta', 'natureza', 'facil'),
+('ARVORE', 'Planta grande com tronco e folhas', 'natureza', 'medio'),
+('NUVEM', 'Algodão branco no céu', 'natureza', 'facil'),
+('SOL', 'Estrela que ilumina o dia', 'natureza', 'facil'),
+('LUA', 'Aparece no céu à noite', 'natureza', 'facil'),
+('ESTRELA', 'Pontinhos brilhantes no céu', 'natureza', 'medio'),
+('MONTANHA', 'Elevação muito alta de terra', 'natureza', 'dificil'),
+('RIO', 'Água doce que corre', 'natureza', 'facil'),
+('PRAIA', 'Lugar com areia e mar', 'natureza', 'facil'),
+('OCEANO', 'Grande quantidade de água salgada', 'natureza', 'medio'),
+
+-- ALIMENTOS (10 palavras)
+('BANANA', 'Fruta amarela e comprida', 'alimentos', 'medio'),
+('MACA', 'Fruta redonda vermelha ou verde', 'alimentos', 'facil'),
+('LARANJA', 'Fruta cítrica alaranjada', 'alimentos', 'medio'),
+('UVA', 'Frutinha redonda em cacho', 'alimentos', 'facil'),
+('MELANCIA', 'Fruta grande verde e vermelha', 'alimentos', 'dificil'),
+('TOMATE', 'Fruto vermelho usado em saladas', 'alimentos', 'medio'),
+('CENOURA', 'Legume laranja que coelhos adoram', 'alimentos', 'medio'),
+('BATATA', 'Tubérculo usado para fazer fritas', 'alimentos', 'medio'),
+('ARROZ', 'Grão branco muito usado no Brasil', 'alimentos', 'facil'),
+('FEIJAO', 'Usado com arroz na comida brasileira', 'alimentos', 'medio'),
+
+-- AÇÕES (10 palavras)
+('CORRER', 'Mover-se rapidamente', 'acoes', 'medio'),
+('PULAR', 'Saltar com os pés', 'acoes', 'facil'),
+('NADAR', 'Mover-se na água', 'acoes', 'facil'),
+('VOAR', 'Mover-se pelo ar', 'acoes', 'facil'),
+('COMER', 'Ingerir alimentos', 'acoes', 'facil'),
+('BEBER', 'Ingerir líquidos', 'acoes', 'facil'),
+('DORMIR', 'Descansar fechando os olhos', 'acoes', 'medio'),
+('ESTUDAR', 'Aprender coisas novas', 'acoes', 'medio'),
+('BRINCAR', 'Divertir-se com jogos', 'acoes', 'medio'),
+('CANTAR', 'Produzir sons musicais com a voz', 'acoes', 'medio');
+
+-- ============================================================================
 -- Fim do DDL
 -- ============================================================================
--- Para popular o banco com dados iniciais (jogos), execute o arquivo de seeds
--- separadamente após criar a estrutura
+-- Copie e cole este arquivo completo no phpMyAdmin ou terminal MySQL
+-- para criar o banco de dados SavePoint pronto para uso
 -- ============================================================================

@@ -83,6 +83,46 @@ Uma plataforma web completa onde as crianças podem:
 
 ---
 
+### ✏️ Complete a Palavra
+**Objetivo**: Complete palavras com letras faltantes antes que o tempo acabe!
+
+**O que desenvolve**:
+- Vocabulário e ortografia
+- Raciocínio dedutivo
+- Agilidade mental
+- Conhecimento de português
+
+**Categorias disponíveis**:
+- 🐾 **Animais** - Gato, cachorro, elefante, girafa...
+- 🔧 **Objetos** - Mesa, cadeira, lápis, computador...
+- 🌿 **Natureza** - Flor, árvore, sol, montanha...
+- 🍎 **Alimentos** - Banana, maçã, laranja, cenoura...
+- 🏃 **Ações** - Correr, pular, nadar, estudar...
+
+**Níveis de dificuldade**:
+- **Fácil**: Palavras curtas (4-5 letras) com 1-2 letras faltando
+- **Médio**: Palavras médias (6-7 letras) com 2-3 letras faltando
+- **Difícil**: Palavras longas (8-10 letras) com 3-4 letras faltando
+
+**Como funciona**:
+1. Uma palavra aparece com algumas letras ocultas (substituídas por `_`)
+2. Leia a dica para descobrir qual é a palavra
+3. Clique nas letras do banco para preencher os espaços
+4. Complete antes do tempo acabar (60 segundos por palavra)
+5. Letras distratoras estão misturadas no banco para aumentar o desafio!
+
+**Pontuação**:
+- Pontos base: 10 pontos por palavra completada
+- Bônus de tempo: +1 ponto por segundo economizado (máximo 70 pontos)
+- Penalidades: -2 pontos ao pular palavra, -5 pontos ao revelar dica
+
+**Recursos especiais**:
+- 💡 **Pedir Dica**: Revela a dica completa (custa 5 pontos)
+- ⏭️ **Pular Palavra**: Pula para próxima palavra (custa 2 pontos)
+- 🔁 **Remover Letra**: Clique na letra preenchida para devolvê-la ao banco
+
+---
+
 ## 🏆 Sistema de Ranking
 
 Compete com outros jogadores e veja quem é o melhor!
@@ -90,6 +130,7 @@ Compete com outros jogadores e veja quem é o melhor!
 **Rankings separados**:
 - 🧠 **Ranking do Jogo da Memória** - Soma de pontos de todas as partidas
 - 🎈 **Ranking do Balão Matemático** - Total de pontos acumulados em todos os modos
+- ✏️ **Ranking do Complete a Palavra** - Total de pontos de todas as palavras completadas
 
 **Leaderboard mostra**:
 - 🥇 Medalhas para Top 3 (ouro, prata, bronze)

@@ -254,3 +254,103 @@ body {
         left: 15px;
     }
 }
+
+/* ============================================================
+   CONTROLES DE ÁUDIO
+   ============================================================ */
+
+.audio-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 15px;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.audio-btn {
+    background: #6c63ff;
+    border: none;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.audio-btn:hover {
+    background: #5a52d5;
+    transform: scale(1.05);
+}
+
+.audio-btn:active {
+    transform: scale(0.95);
+}
+
+#volume-slider {
+    width: 100px;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #6c63ff 0%, #6c63ff 50%, #ddd 50%, #ddd 100%);
+    outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+}
+
+#volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #6c63ff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #6c63ff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#volume-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+#volume-slider::-moz-range-thumb:hover {
+    transform: scale(1.1);
+}
+
+/* Responsivo para controles de áudio */
+@media (max-width: 600px) {
+    .audio-controls {
+        top: 60px;
+        right: 15px;
+        padding: 8px 12px;
+    }
+
+    .audio-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+    }
+
+    #volume-slider {
+        width: 80px;
+    }
+}
