@@ -7,12 +7,6 @@
 </head>
 <body>
 
-  <!-- Controles de Áudio -->
-  <div id="audio-controls">
-    <button id="audio-toggle" class="audio-btn" title="Ligar/Desligar Som">🔊</button>
-    <input type="range" id="volume-slider" min="0" max="100" value="70" title="Volume">
-  </div>
-
   <div class="nuvem nuvem1"></div>
   <div class="nuvem nuvem2"></div>
   <div class="nuvem nuvem3"></div>
@@ -27,6 +21,12 @@
   </div>
 
   <div id="tela-nivel" class="tela-container hidden">
+    
+    <div id="audio-controls">
+      <button id="audio-toggle" class="audio-btn" title="Ligar/Desligar Som">🔊</button>
+      <input type="range" id="volume-slider" min="0" max="100" value="70" title="Volume">
+    </div>
+
     <div class="tela-conteudo">
       <h2>Selecione o Nível</h2>
       <p>Escolha um tipo de desafio:</p>
@@ -34,6 +34,7 @@
       <button id="nivel-subtracao">Subtrações</button>
       <button id="nivel-multiplicacao">Multiplicações</button>
       <button id="nivel-divisao">Divisões</button>
+      <button id="botao-voltar-inicio" class="botao-secundario">Voltar</button>
     </div>
   </div>
 
@@ -43,6 +44,7 @@
       <p>O balão com a resposta certa escapou.</p>
       <p id="pontuacao-final"></p>
       <button id="botao-tentar-novamente">Tentar Novamente</button>
+      <button id="botao-sair-game-over" class="botao-secundario">Sair</button>
     </div>
   </div>
 
