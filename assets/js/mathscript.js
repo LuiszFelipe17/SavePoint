@@ -11,6 +11,11 @@ const botaoNivelSubtracao = document.getElementById('nivel-subtracao');
 const botaoNivelMultiplicacao = document.getElementById('nivel-multiplicacao');
 const botaoNivelDivisao = document.getElementById('nivel-divisao');
 
+// Botões "Voltar" e "Sair" adicionados
+const botaoVoltarInicio = document.getElementById('botao-voltar-inicio');
+const botaoSairGameOver = document.getElementById('botao-sair-game-over');
+
+
 const problemaContainer = document.createElement('div');
 problemaContainer.style.position = 'absolute';
 problemaContainer.style.top = '20px';
@@ -286,6 +291,18 @@ botaoTentarNovamente.addEventListener('click', () => {
   telaGameOver.classList.add('hidden');
   telaNivel.classList.remove('hidden');
 });
+
+// Eventos dos botões "Voltar" e "Sair" adicionados
+botaoVoltarInicio.addEventListener('click', () => {
+  telaNivel.classList.add('hidden');
+  telaInicial.classList.remove('hidden');
+});
+
+botaoSairGameOver.addEventListener('click', () => {
+  telaGameOver.classList.add('hidden');
+  telaInicial.classList.remove('hidden');
+});
+
 
 // Controles de Áudio
 function initAudioControls() {
