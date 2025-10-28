@@ -97,6 +97,7 @@ body {
   font-weight: bold;
   box-shadow: 0 5px 10px rgba(0,0,0,0.2);
   transition: transform 0.2s, background-color 0.2s;
+  margin: 5px; 
 }
 
 .tela-conteudo button:hover {
@@ -104,7 +105,31 @@ body {
   background-color: #ff4500;
 }
 
-/* Balões */
+/*Botões Voltar e Sair */
+.tela-conteudo button.botao-secundario {
+  background-color: transparent;
+  color: #003366;
+  border: 2px solid #003366;
+  font-size: 1.2em;
+  padding: 10px 20px;
+  margin-top: 20px; 
+}
+
+.tela-conteudo button.botao-secundario:hover {
+  background-color: rgba(0, 51, 102, 0.1);
+  transform: scale(1.03);
+}
+
+#tela-game-over .tela-conteudo button.botao-secundario {
+  color: white;
+  border-color: white;
+}
+
+#tela-game-over .tela-conteudo button.botao-secundario:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+
 .balao {
   width: 60px;
   height: 80px;
@@ -171,7 +196,6 @@ body {
   }
 }
 
-/* Nuvens */
 .nuvem {
   width: 200px;
   height: 60px;
@@ -245,13 +269,11 @@ body {
   animation: brilho 0.6s ease-out;
 }
 
-
-/* Controles de Áudio */
 #audio-controls {
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 20px;
-  z-index: 1000;
+  z-index: 210; 
   display: flex;
   align-items: center;
   gap: 10px;
