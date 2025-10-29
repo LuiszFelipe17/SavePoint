@@ -6,11 +6,11 @@
 -- ============================================================================
 
 -- Criação do banco de dados
-CREATE DATABASE IF NOT EXISTS savepoint
+CREATE DATABASE IF NOT EXISTS u996520224_savepoint
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
-USE savepoint;
+USE u996520224_savepoint;
 
 -- ============================================================================
 -- Tabela: users

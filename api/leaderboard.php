@@ -30,7 +30,7 @@ if (empty($game_code)) {
     json_out(['ok' => false, 'error' => 'Código do jogo obrigatório'], 422);
 }
 
-if (!in_array($game_code, ['memory', 'math'])) {
+if (!in_array($game_code, ['memory', 'math', 'portuguese'])) {
     json_out(['ok' => false, 'error' => 'Código de jogo inválido'], 422);
 }
 

@@ -321,10 +321,29 @@ function initAudioControls() {
     }
 }
 
+// Botão de sair - salvar pontuação antes de voltar ao dashboard
+function initExitButton() {
+    const btnSair = document.getElementById('exit-game-btn');
+
+    if (btnSair) {
+        btnSair.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            // Salvar pontuação se houver pontos e o jogo não terminou
+            if (score > 0 && !isGameOver) {
+                await salvarPontuacao(score, 'quit');
+            }
+
+            window.location.href = '../dashboard/';
+        });
+    }
+}
+
 // Verificar autenticação ao carregar a página
 (async function init() {
     usuarioLogado = await verificarAutenticacao();
     if (!usuarioLogado) return;
     console.log('Usuário autenticado:', usuarioLogado.username);
     initAudioControls();
+    initExitButton();
 })();
