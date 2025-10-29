@@ -18,16 +18,21 @@ USE u996520224_savepoint;
 -- Armazena informações básicas de autenticação dos usuários
 -- ============================================================================
 CREATE TABLE users (
-  id            BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  username      VARCHAR(30)     NOT NULL,
-  email         VARCHAR(255)    NOT NULL,
-  password_hash VARCHAR(255)    NOT NULL,
-  is_active     TINYINT(1)      NOT NULL DEFAULT 1,
-  created_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  updated_at    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  id             BIGINT UNSIGNED      NOT NULL AUTO_INCREMENT,
+  username       VARCHAR(30)          NOT NULL,
+  email          VARCHAR(255)         NOT NULL,
+  password_hash  VARCHAR(255)         NOT NULL,
+  is_active      TINYINT(1)           NOT NULL DEFAULT 1,
+  created_at     DATETIME             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at     DATETIME             NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  last_login     DATETIME             NULL,
+  login_attempts TINYINT(3) UNSIGNED  NOT NULL DEFAULT 0,
+  locked_until   DATETIME             NULL,
   PRIMARY KEY (id),
   UNIQUE KEY uq_users_username (username),
-  UNIQUE KEY uq_users_email (email)
+  UNIQUE KEY uq_users_email (email),
+  KEY idx_last_login (last_login),
+  KEY idx_locked_until (locked_until)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
@@ -116,6 +121,23 @@ CREATE TABLE palavras_portugues (
   PRIMARY KEY (id),
   KEY idx_dificuldade (dificuldade),
   KEY idx_categoria (categoria)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================================
+-- Tabela: login_attempts
+-- ============================================================================
+-- Registro de tentativas de login para prevenção de brute force
+-- Utilizada pelo sistema de rate limiting para proteger contas
+-- ============================================================================
+CREATE TABLE login_attempts (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  ip_address VARCHAR(45) NOT NULL,
+  identifier VARCHAR(255) NOT NULL,
+  attempted_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  success TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id),
+  KEY idx_ip_time (ip_address, attempted_at),
+  KEY idx_identifier_time (identifier, attempted_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================================================
