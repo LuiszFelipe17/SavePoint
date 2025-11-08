@@ -44,7 +44,7 @@ if ($score < 0) {
     json_out(['ok' => false, 'error' => 'Pontuação inválida'], 422);
 }
 
-if (!in_array($status, ['completed', 'failed', 'abandoned'])) {
+if (!in_array($status, ['completed', 'failed', 'quit'])) {
     $status = 'completed';
 }
 
@@ -100,10 +100,22 @@ try {
 
     $score_id = $pdo->lastInsertId();
 
+    // Após salvar, busca a nova pontuação total do usuário para este jogo.
+    $stmt_total = $pdo->prepare(
+        'SELECT SUM(score) as total_score FROM game_session WHERE user_id = ? AND game_id = ?'
+    );
+    $stmt_total->execute([$user_id, $game_id]);
+    $result = $stmt_total->fetch();
+    $new_total_score = $result ? (int)$result['total_score'] : 0;
+    // --- FIM DO NOVO TRECHO ---
+
+
+    // Adiciona 'new_total_score' a resposta JSON
     json_out([
         'ok' => true,
         'score_id' => (int)$score_id,
         'score' => $score,
+        'new_total_score' => $new_total_score,
         'message' => 'Pontuação salva com sucesso'
     ]);
 
