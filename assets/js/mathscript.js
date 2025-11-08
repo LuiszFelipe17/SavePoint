@@ -10,6 +10,7 @@ const botaoNivelSoma = document.getElementById('nivel-soma');
 const botaoNivelSubtracao = document.getElementById('nivel-subtracao');
 const botaoNivelMultiplicacao = document.getElementById('nivel-multiplicacao');
 const botaoNivelDivisao = document.getElementById('nivel-divisao');
+const botaoNivelExtremo = document.getElementById('nivel-extremo');
 
 const problemaContainer = document.createElement('div');
 problemaContainer.style.position = 'absolute';
@@ -28,7 +29,10 @@ let balaoCorretoElemento = null;
 let isGameOver = false;
 let score = 0;
 let nivelSelecionado = "soma";
+let currentRoundOperation = "";
 let usuarioLogado = null;
+
+const SCORE_TO_UNLOCK_EXTREME = 25;
 
 // Gerenciador de áudio
 const audioManager = new AudioManager();
@@ -86,12 +90,38 @@ async function salvarPontuacao(pontos, status) {
     }
 }
 
+// Buscar pontuação total do banco de dados
+async function buscarPontuacaoTotal() {
+    if (!usuarioLogado) return 0;
+    try {
+        const res = await fetch('../api/game_get_total_score.php?game_code=math', {
+            credentials: 'same-origin'
+        });
+        const data = await res.json();
+        if (data && typeof data.total_score !== 'undefined') {
+            return data.total_score;
+        }
+        return 0;
+    } catch (err) {
+        console.error('Erro ao buscar pontuação total:', err);
+        return 0;
+    }
+}
+
+// ATUALIZADO: gerencia a classe do body
 function startGame() {
   telaInicial.classList.add('hidden');
   telaGameOver.classList.add('hidden');
   telaNivel.classList.add('hidden');
   areaJogo.classList.remove('hidden');
   
+  // Adiciona ou remove a classe para o fundo noturno
+  if (nivelSelecionado === 'extremo') {
+      document.body.classList.add('extreme-mode');
+  } else {
+      document.body.classList.remove('extreme-mode');
+  }
+
   isGameOver = false;
   score = 0;
   placarElemento.textContent = `Pontos: ${score}`;
@@ -100,14 +130,24 @@ function startGame() {
   iniciarRodada();
 }
 
+// Recebe a pontuação total como argumento
+function checkAndUnlockExtremeLevel(totalScore) {
+    if (totalScore >= SCORE_TO_UNLOCK_EXTREME) {
+        botaoNivelExtremo.classList.remove('hidden');
+    }
+}
+
 async function gameOver() {
   if (isGameOver) return;
   isGameOver = true;
 
-  audioManager.play('gameover'); // Som de game over
+  audioManager.play('gameover');
+  
+  const saveData = await salvarPontuacao(score, 'failed');
 
-  // Salvar pontuação
-  await salvarPontuacao(score, 'failed');
+  if (saveData && typeof saveData.new_total_score !== 'undefined') {
+      checkAndUnlockExtremeLevel(saveData.new_total_score);
+  }
 
   pontuacaoFinalElemento.textContent = `Sua pontuação: ${score}`;
   telaGameOver.classList.remove('hidden');
@@ -121,28 +161,42 @@ async function gameOver() {
 
 function gerarNovaConta() {
   let num1, num2;
-  if (nivelSelecionado === "soma") {
-    num1 = Math.floor(Math.random() * 20) + 1;
-    num2 = Math.floor(Math.random() * 20) + 1;
-    respostaCorreta = num1 + num2;
-    problemaContainer.textContent = `${num1} + ${num2} = ?`;
-  } else if (nivelSelecionado === "subtracao") {
-    num1 = Math.floor(Math.random() * 20) + 10;
-    num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
-    respostaCorreta = num1 - num2;
-    problemaContainer.textContent = `${num1} - ${num2} = ?`;
-  } else if (nivelSelecionado === "multiplicacao") {
-    num1 = Math.floor(Math.random() * 10) + 1;
-    num2 = Math.floor(Math.random() * 10) + 1;
-    respostaCorreta = num1 * num2;
-    problemaContainer.textContent = `${num1} × ${num2} = ?`;
-  } else if (nivelSelecionado === "divisao") {
-    const divisor = Math.floor(Math.random() * 9) + 2;
-    const quociente = Math.floor(Math.random() * 10) + 1;
-    num1 = divisor * quociente;
-    num2 = divisor;
-    respostaCorreta = quociente;
-    problemaContainer.textContent = `${num1} ÷ ${num2} = ?`;
+  let operationToExecute = nivelSelecionado;
+
+  if (nivelSelecionado === "extremo") {
+      const operations = ["soma", "subtracao", "multiplicacao", "divisao"];
+      operationToExecute = operations[Math.floor(Math.random() * operations.length)];
+  }
+
+  currentRoundOperation = operationToExecute;
+
+  switch (operationToExecute) {
+      case "soma":
+          num1 = Math.floor(Math.random() * 20) + 1;
+          num2 = Math.floor(Math.random() * 20) + 1;
+          respostaCorreta = num1 + num2;
+          problemaContainer.textContent = `${num1} + ${num2} = ?`;
+          break;
+      case "subtracao":
+          num1 = Math.floor(Math.random() * 20) + 10;
+          num2 = Math.floor(Math.random() * (num1 - 1)) + 1;
+          respostaCorreta = num1 - num2;
+          problemaContainer.textContent = `${num1} - ${num2} = ?`;
+          break;
+      case "multiplicacao":
+          num1 = Math.floor(Math.random() * 10) + 1;
+          num2 = Math.floor(Math.random() * 10) + 1;
+          respostaCorreta = num1 * num2;
+          problemaContainer.textContent = `${num1} × ${num2} = ?`;
+          break;
+      case "divisao":
+          const divisor = Math.floor(Math.random() * 9) + 2;
+          const quociente = Math.floor(Math.random() * 10) + 1;
+          num1 = divisor * quociente;
+          num2 = divisor;
+          respostaCorreta = quociente;
+          problemaContainer.textContent = `${num1} ÷ ${num2} = ?`;
+          break;
   }
 }
 
@@ -179,7 +233,7 @@ function criarBalao(numero) {
     const clickedValue = parseInt(balao.textContent, 10);
     balao.classList.add('explodido');
 
-    audioManager.play('pop'); // Som ao clicar no balão
+    audioManager.play('pop');
 
     const areaRect = areaJogo.getBoundingClientRect();
     const balaoRect = balao.getBoundingClientRect();
@@ -203,12 +257,9 @@ function criarBalao(numero) {
     if (clickedValue === respostaCorreta) {
       score++;
       placarElemento.textContent = `Pontos: ${score}`;
-
-      audioManager.play('correct'); // Som ao acertar
-
+      audioManager.play('correct');
       problemaContainer.classList.add("brilho");
       setTimeout(() => problemaContainer.classList.remove("brilho"), 600);
-
       balaoCorretoElemento = null;
       if (!isGameOver) iniciarRodada();
     }
@@ -233,14 +284,21 @@ function iniciarRodada() {
   const opcoesDeResposta = new Set([respostaCorreta]);
   while(opcoesDeResposta.size < numeroDeBaloes) {
       let maxRandom;
-      if (nivelSelecionado === "soma") {
-        maxRandom = 40;
-      } else if (nivelSelecionado === "subtracao") {
-        maxRandom = 30;
-      } else if (nivelSelecionado === "multiplicacao") {
-        maxRandom = 100;
-      } else if (nivelSelecionado === "divisao") {
-        maxRandom = 20;
+      switch (currentRoundOperation) {
+          case "soma":
+              maxRandom = 40;
+              break;
+          case "subtracao":
+              maxRandom = 30;
+              break;
+          case "multiplicacao":
+              maxRandom = 100;
+              break;
+          case "divisao":
+              maxRandom = 20;
+              break;
+          default:
+              maxRandom = 50;
       }
       const numeroAleatorio = Math.floor(Math.random() * maxRandom) + 1;
       opcoesDeResposta.add(numeroAleatorio);
@@ -282,9 +340,17 @@ botaoNivelDivisao.addEventListener('click', () => {
   startGame();
 });
 
+botaoNivelExtremo.addEventListener('click', () => {
+  nivelSelecionado = "extremo";
+  startGame();
+});
+
+//Garante que o fundo volte ao normal
 botaoTentarNovamente.addEventListener('click', () => {
   telaGameOver.classList.add('hidden');
   telaNivel.classList.remove('hidden');
+  // Remove a classe de modo extremo ao voltar para a tela de nível
+  document.body.classList.remove('extreme-mode');
 });
 
 // Controles de Áudio
@@ -293,9 +359,7 @@ function initAudioControls() {
     const volumeSlider = document.getElementById('volume-slider');
 
     if (audioToggle) {
-        // Restaurar estado do mute
         audioToggle.textContent = audioManager.isMuted() ? '🔇' : '🔊';
-
         audioToggle.addEventListener('click', () => {
             const muted = audioManager.toggleMute();
             audioToggle.textContent = muted ? '🔇' : '🔊';
@@ -303,17 +367,12 @@ function initAudioControls() {
     }
 
     if (volumeSlider) {
-        // Restaurar volume
         volumeSlider.value = audioManager.getVolume() * 100;
-
-        // Atualizar gradiente do slider
         function updateSliderBackground() {
             const value = volumeSlider.value;
             volumeSlider.style.background = `linear-gradient(to right, #ff6347 0%, #ff6347 ${value}%, #ddd ${value}%, #ddd 100%)`;
         }
-
         updateSliderBackground();
-
         volumeSlider.addEventListener('input', () => {
             audioManager.setVolume(volumeSlider.value / 100);
             updateSliderBackground();
@@ -321,29 +380,29 @@ function initAudioControls() {
     }
 }
 
-// Botão de sair - salvar pontuação antes de voltar ao dashboard
+// Botão de sair
 function initExitButton() {
     const btnSair = document.getElementById('exit-game-btn');
-
     if (btnSair) {
         btnSair.addEventListener('click', async (e) => {
             e.preventDefault();
-
-            // Salvar pontuação se houver pontos e o jogo não terminou
             if (score > 0 && !isGameOver) {
                 await salvarPontuacao(score, 'quit');
             }
-
             window.location.href = '../dashboard/';
         });
     }
 }
 
-// Verificar autenticação ao carregar a página
+// Inicialização do jogo
 (async function init() {
     usuarioLogado = await verificarAutenticacao();
     if (!usuarioLogado) return;
     console.log('Usuário autenticado:', usuarioLogado.username);
+    
+    const totalScore = await buscarPontuacaoTotal();
+    checkAndUnlockExtremeLevel(totalScore); 
+    
     initAudioControls();
     initExitButton();
 })();
