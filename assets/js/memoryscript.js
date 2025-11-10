@@ -391,10 +391,23 @@ function initAudioControls() {
     }
 }
 
+// Botão de Sair
+function initExitButton() {
+    const exitBtn = document.getElementById('exit-game-btn');
+    if (exitBtn) {
+        exitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            clearInterval(timerInterval);
+            window.location.href = '../dashboard/';
+        });
+    }
+}
+
 // Verificar autenticação ao carregar a página
 (async function init() {
     usuarioLogado = await verificarAutenticacao();
     if (!usuarioLogado) return;
     console.log('Usuário autenticado:', usuarioLogado.username);
     initAudioControls();
+    initExitButton();
 })();

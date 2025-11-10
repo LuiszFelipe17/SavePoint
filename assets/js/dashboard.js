@@ -35,16 +35,31 @@
     async function ensureAuth() {
       const cached = getStoredUser();
       if (cached) {
-        setUsername(cached.username || cached.email || 'Jogador');
-        setAvatar(cached.username || cached.email, cached.avatar_url);
+        setUsername(cached.display_name || cached.username || cached.email || 'Jogador');
+        setAvatar(cached.display_name || cached.username || cached.email, cached.avatar_url);
       }
-  
+
       const me = await getSession();
       if (!me || me.ok !== true || me.authenticated !== true) {
         localStorage.removeItem('sp_user');
         window.location.href = '../login/';
         return;
       }
+
+      // Atualizar com dados frescos da API
+      const displayName = me.display_name || me.username || me.email || 'Jogador';
+      setUsername(displayName);
+      setAvatar(displayName, me.avatar_url);
+
+      // Salvar no localStorage para próxima vez
+      try {
+        localStorage.setItem('sp_user', JSON.stringify({
+          user_id: me.user_id,
+          username: me.username,
+          display_name: me.display_name,
+          avatar_url: me.avatar_url
+        }));
+      } catch(e) {}
     }
   
     function bindLogout() {

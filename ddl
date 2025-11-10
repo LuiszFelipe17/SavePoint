@@ -159,9 +159,9 @@ INSERT INTO palavras_portugues (palavra, dica, categoria, dificuldade) VALUES
 -- ANIMAIS (15 palavras)
 ('GATO', 'Animal doméstico que faz miau', 'animais', 'facil'),
 ('CACHORRO', 'Melhor amigo do homem', 'animais', 'medio'),
-('ELEFANTE', 'Maior animal terrestre com tromba', 'animais', 'dificil'),
+('ELEFANTE', 'Animal gigante com orelhas grandes', 'animais', 'dificil'),
 ('GIRAFA', 'Animal de pescoço muito longo', 'animais', 'medio'),
-('MACACO', 'Animal que gosta de banana', 'animais', 'medio'),
+('MACACO', 'Animal ágil que vive nas árvores', 'animais', 'medio'),
 ('TIGRE', 'Grande felino listrado', 'animais', 'facil'),
 ('LEAO', 'Rei da selva', 'animais', 'facil'),
 ('ZEBRA', 'Animal listrado de preto e branco', 'animais', 'facil'),
@@ -210,7 +210,7 @@ INSERT INTO palavras_portugues (palavra, dica, categoria, dificuldade) VALUES
 ('MELANCIA', 'Fruta grande verde e vermelha', 'alimentos', 'dificil'),
 ('TOMATE', 'Fruto vermelho usado em saladas', 'alimentos', 'medio'),
 ('CENOURA', 'Legume laranja que coelhos adoram', 'alimentos', 'medio'),
-('BATATA', 'Tubérculo usado para fazer fritas', 'alimentos', 'medio'),
+('BATATA', 'Legume marrom usado em diversas receitas', 'alimentos', 'medio'),
 ('ARROZ', 'Grão branco muito usado no Brasil', 'alimentos', 'facil'),
 ('FEIJAO', 'Usado com arroz na comida brasileira', 'alimentos', 'medio'),
 

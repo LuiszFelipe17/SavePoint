@@ -268,11 +268,43 @@ h2 {
     height: auto;
 }
 
+/* Botão de Sair */
+.exit-game-icon {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.exit-game-icon:hover {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.exit-game-icon:active {
+    transform: scale(0.95);
+}
+
 /* Controles de Áudio */
 #audio-controls {
     position: fixed;
     top: 20px;
-    left: 20px;
+    right: 20px;
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -337,9 +369,17 @@ h2 {
 }
 
 @media (max-width: 600px) {
-    #audio-controls {
+    .exit-game-icon {
         top: 10px;
         left: 10px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+
+    #audio-controls {
+        top: 10px;
+        right: 10px;
         padding: 8px 12px;
     }
 

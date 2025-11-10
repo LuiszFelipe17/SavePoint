@@ -13,7 +13,9 @@ async function checkAuth() {
             return {
                 authenticated: true,
                 username: data.username,
-                user_id: data.user_id
+                user_id: data.user_id,
+                display_name: data.display_name,
+                avatar_url: data.avatar_url
             };
         }
         return null;
@@ -24,12 +26,24 @@ async function checkAuth() {
 }
 
 // Atualizar interface para usuário logado
-function updateUIForLoggedUser(username) {
+function updateUIForLoggedUser(user) {
+    const displayName = user.display_name || user.username;
+    const firstLetter = displayName.charAt(0).toUpperCase();
+
+    // Criar HTML do avatar
+    let avatarHTML = '';
+    if (user.avatar_url) {
+        avatarHTML = `<div class="user-avatar"><img src="${user.avatar_url}" alt="Avatar"></div>`;
+    } else {
+        avatarHTML = `<div class="user-avatar">${firstLetter}</div>`;
+    }
+
     // 1. Substituir botões do header
     const navButtons = document.querySelector('.nav-buttons');
     if (navButtons) {
         navButtons.innerHTML = `
-            <span class="welcome-text">Olá, <strong>${username}</strong>!</span>
+            ${avatarHTML}
+            <span class="welcome-text">Olá, <strong>${displayName}</strong>!</span>
             <button class="btn btn-primary btn-dashboard">Ir para Dashboard</button>
         `;
     }
@@ -88,7 +102,7 @@ async function init() {
     if (user && user.authenticated) {
         // Usuário logado - adaptar interface
         console.log('Usuário logado detectado:', user.username);
-        updateUIForLoggedUser(user.username);
+        updateUIForLoggedUser(user);
     } else {
         // Usuário não logado - manter botões padrão
         console.log('Usuário não logado - mostrando botões padrão');
