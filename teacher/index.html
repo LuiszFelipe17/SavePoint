@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Professor - SavePoint</title>
+    <link rel="stylesheet" href="../assets/css/teacher.css">
+    <link rel="stylesheet" href="../assets/css/notifications.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header class="teacher-header">
+        <div class="header-container">
+            <div class="header-left">
+                <h1><i class="fas fa-chalkboard-teacher"></i> Dashboard Professor</h1>
+            </div>
+            <div class="header-right">
+                <button class="notification-bell" id="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+                </button>
+                <a href="../dashboard/" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="teacher-main">
+        <div class="container">
+            <!-- Seção: Criar Nova Turma -->
+            <section class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-plus-circle"></i> Criar Nova Turma</h2>
+                </div>
+                <div class="card-body">
+                    <form id="create-class-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="class-name">Nome da Turma *</label>
+                                <input type="text" id="class-name" name="name" placeholder="Ex: 5º Ano A" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="school-year">Ano Letivo</label>
+                                <input type="text" id="school-year" name="school_year" placeholder="Ex: 2025">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="class-description">Descrição (opcional)</label>
+                            <textarea id="class-description" name="description" rows="2" placeholder="Breve descrição da turma"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Criar Turma
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Seção: Minhas Turmas -->
+            <section class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> Minhas Turmas</h2>
+                    <button class="btn btn-secondary btn-sm" id="refresh-classes">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                </div>
+                <div class="card-body">
+                    <div id="classes-list" class="classes-grid">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando turmas...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Seção: Desafios -->
+            <section class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-trophy"></i> Desafios</h2>
+                    <button class="btn btn-primary btn-sm" id="create-challenge-btn">
+                        <i class="fas fa-plus"></i> Novo Desafio
+                    </button>
+                </div>
+                <div class="card-body">
+                    <!-- Filtros -->
+                    <div class="challenge-filters">
+                        <select id="challenge-status-filter" class="form-select">
+                            <option value="">Todos os status</option>
+                            <option value="pending">Aguardando Início</option>
+                            <option value="active">Ativos</option>
+                            <option value="completed">Concluídos</option>
+                            <option value="cancelled">Cancelados</option>
+                        </select>
+                        <select id="challenge-class-filter" class="form-select">
+                            <option value="">Todas as turmas</option>
+                        </select>
+                        <button class="btn btn-secondary btn-sm" id="refresh-challenges">
+                            <i class="fas fa-sync-alt"></i> Atualizar
+                        </button>
+                    </div>
+
+                    <!-- Lista de Desafios -->
+                    <div id="challenges-list" class="challenges-container">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando desafios...
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal: Detalhes da Turma -->
+    <div class="modal" id="class-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-class-name">Carregando...</h2>
+                <button class="modal-close" id="close-class-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="class-info">
+                    <p><strong>Código:</strong> <span id="modal-class-code">-</span></p>
+                    <p><strong>Alunos Ativos:</strong> <span id="modal-student-count">0</span></p>
+                    <p><strong>Convites Pendentes:</strong> <span id="modal-pending-count">0</span></p>
+                </div>
+
+                <!-- Adicionar Aluno -->
+                <div class="add-student-section">
+                    <h3><i class="fas fa-user-plus"></i> Adicionar Aluno</h3>
+                    <form id="add-student-form">
+                        <div class="form-inline">
+                            <input type="text" id="student-username" placeholder="Digite o username do aluno" required>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Convidar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lista de Alunos -->
+                <div class="students-section">
+                    <h3><i class="fas fa-list"></i> Alunos</h3>
+                    <div id="students-list" class="students-table-container">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando alunos...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Detalhes do Aluno -->
+    <div class="modal" id="student-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div>
+                    <h2 id="student-modal-name">Carregando...</h2>
+                    <small id="student-modal-username" style="color: rgba(255,255,255,0.8);"></small>
+                </div>
+                <button class="modal-close" id="close-student-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Tabs de navegação -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="stats">
+                        <i class="fas fa-chart-bar"></i> Estatísticas
+                    </button>
+                    <button class="tab-btn" data-tab="evolution">
+                        <i class="fas fa-chart-line"></i> Evolução
+                    </button>
+                    <button class="tab-btn" data-tab="preferences">
+                        <i class="fas fa-cog"></i> Preferências
+                    </button>
+                </div>
+
+                <!-- Conteúdo das abas -->
+                <div class="tab-content active" id="tab-stats">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando estatísticas...
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-evolution">
+                    <div class="chart-controls">
+                        <select id="evolution-period" class="form-select">
+                            <option value="day">Últimos 30 dias</option>
+                            <option value="week">Últimas 30 semanas</option>
+                            <option value="month">Últimos 12 meses</option>
+                        </select>
+                        <select id="evolution-game" class="form-select">
+                            <option value="">Todos os jogos</option>
+                            <option value="1">Jogo da Memória</option>
+                            <option value="2">Balão Matemático</option>
+                            <option value="3">Complete a Palavra</option>
+                        </select>
+                    </div>
+                    <div style="max-width: 100%; height: 400px; position: relative;">
+                        <canvas id="evolution-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="tab-preferences">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando preferências...
+                    </div>
+                </div>
+
+                <!-- Botão de exportação -->
+                <div style="margin-top: 30px; text-align: right;">
+                    <button class="btn btn-secondary" id="export-student-data">
+                        <i class="fas fa-download"></i> Exportar Relatório (CSV)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Criar Desafio -->
+    <div class="modal" id="create-challenge-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-trophy"></i> Criar Novo Desafio</h2>
+                <button class="modal-close" id="close-create-challenge-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-challenge-form">
+                    <div class="form-group">
+                        <label for="challenge-title">Título do Desafio *</label>
+                        <input type="text" id="challenge-title" name="title" placeholder="Ex: Desafio Rápido de Memória" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="challenge-description">Descrição (opcional)</label>
+                        <textarea id="challenge-description" name="description" rows="2" placeholder="Breve descrição do desafio"></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="challenge-game">Jogo *</label>
+                            <select id="challenge-game" name="game_id" required>
+                                <option value="">Selecione um jogo</option>
+                                <option value="1">Jogo da Memória</option>
+                                <option value="2">Balão Matemático</option>
+                                <option value="3">Complete a Palavra</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="challenge-difficulty">Dificuldade (opcional)</label>
+                            <select id="challenge-difficulty" name="difficulty">
+                                <option value="">Livre (aluno escolhe)</option>
+                                <option value="easy">Fácil</option>
+                                <option value="medium">Médio</option>
+                                <option value="hard">Difícil</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="challenge-type">Tipo de Desafio *</label>
+                            <select id="challenge-type" name="type" required>
+                                <option value="class">Turma Completa</option>
+                                <option value="individual">Alunos Específicos</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="challenge-duration">Duração (minutos) *</label>
+                            <input type="number" id="challenge-duration" name="duration_minutes" min="1" max="60" value="10" required>
+                        </div>
+                    </div>
+
+                    <!-- Seletor de Turma (para tipo "class") -->
+                    <div class="form-group" id="challenge-class-select-group">
+                        <label for="challenge-class">Turma *</label>
+                        <select id="challenge-class" name="class_id">
+                            <option value="">Selecione uma turma</option>
+                        </select>
+                    </div>
+
+                    <!-- Seletor de Alunos (para tipo "individual") -->
+                    <div class="form-group" id="challenge-students-select-group" style="display: none;">
+                        <label>Alunos *</label>
+                        <p class="form-help">Primeiro selecione uma turma, depois escolha os alunos:</p>
+                        <select id="challenge-class-for-students" class="form-select">
+                            <option value="">Selecione uma turma</option>
+                        </select>
+                        <div id="challenge-students-checkboxes" class="students-checkboxes">
+                            <p class="text-muted">Selecione uma turma para ver os alunos</p>
+                        </div>
+                    </div>
+
+                    <div class="form-info">
+                        <i class="fas fa-info-circle"></i>
+                        <p>O desafio iniciará automaticamente em <strong>1 minuto</strong> após a criação.</p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-create-challenge">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Criar Desafio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Resultados do Desafio -->
+    <div class="modal" id="challenge-results-modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <div>
+                    <h2 id="challenge-results-title">Carregando...</h2>
+                    <small id="challenge-results-subtitle" style="color: rgba(255,255,255,0.8);"></small>
+                </div>
+                <button class="modal-close" id="close-challenge-results-modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Info do Desafio -->
+                <div id="challenge-info" class="challenge-info-section">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> Carregando informações...
+                    </div>
+                </div>
+
+                <!-- Estatísticas Gerais -->
+                <div id="challenge-stats" class="stats-grid" style="margin-top: 20px;">
+                    <!-- Será preenchido via JS -->
+                </div>
+
+                <!-- Placar/Leaderboard -->
+                <div class="leaderboard-section">
+                    <h3><i class="fas fa-medal"></i> Placar de Resultados</h3>
+                    <div id="challenge-leaderboard" class="leaderboard-table-container">
+                        <div class="loading">
+                            <i class="fas fa-spinner fa-spin"></i> Carregando placar...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../assets/js/notifications.js"></script>
+    <script src="../assets/js/teacher.js?v=20251113b"></script>
+</body>
+</html>

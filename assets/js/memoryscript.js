@@ -27,6 +27,8 @@ let tempoRestante;
 let tempoInicial;
 let usuarioLogado = null;
 
+// FASE 4: Sistema de Desafios (usando challengeHelper global)
+
 // Gerenciador de áudio
 const audioManager = new AudioManager();
 
@@ -138,10 +140,42 @@ async function salvarPontuacao(pontos, duracao, status) {
 
         const data = await res.json();
         console.log('Pontuação salva:', data);
+
+        // FASE 4: Se for um desafio, enviar também para a API de desafios
+        if (window.challengeHelper && window.challengeHelper.isActive() && status === 'completed') {
+            await window.challengeHelper.submitScore(pontos, duracao, data.session_id);
+        }
+
         return data;
     } catch (err) {
         console.error('Erro ao salvar pontuação:', err);
         return null;
+    }
+}
+
+// FASE 4: Detectar modo desafio (usando challengeHelper global)
+function detectarDesafioAtivo() {
+    if (!window.challengeHelper) return;
+
+    // Usar o challengeHelper global para detectar e mostrar indicador
+    const challenge = window.challengeHelper.detectActiveChallenge();
+
+    if (challenge) {
+        // Lógica específica do Memory: pular telas e ir direto para o jogo
+        telaInicial.classList.add('oculto');
+
+        // Se dificuldade foi especificada, selecionar automaticamente
+        if (challenge.difficulty && challenge.difficulty !== 'free') {
+            // Pular tela de tema e ir direto para jogo com tema padrão
+            temaSelecionado = 'geometria'; // tema padrão
+            dificuldadeAtual = challenge.difficulty;
+            telaDificuldade.classList.add('oculto');
+            telaJogo.classList.remove('oculto');
+            iniciarJogo(temaSelecionado, dificuldadeAtual);
+        } else {
+            // Mostrar tela de seleção de tema
+            telaDificuldade.classList.remove('oculto');
+        }
     }
 }
 
@@ -403,11 +437,35 @@ function initExitButton() {
     }
 }
 
+// BUG FIX #3: Listener para tempo esgotado do desafio
+window.addEventListener('challengeTimeExpired', async (event) => {
+    console.log('[Memory] Tempo do desafio esgotado!', event.detail);
+
+    // Parar o timer do jogo
+    if (timerInterval) clearInterval(timerInterval);
+
+    // Salvar score atual (mesmo que não tenha completado)
+    const status = 'completed'; // Forçar completed para salvar
+    const pontos = paresEncontrados * 10; // Calcular pontos pelos pares encontrados
+    const duracao = Math.floor((Date.now() - startTime) / 1000);
+
+    // Salvar no banco
+    const data = await salvarPartida(pontos, duracao, status);
+
+    // Se está em modo desafio, submeter score
+    if (window.challengeHelper && window.challengeHelper.isActive() && data && data.session_id) {
+        await window.challengeHelper.submitScore(pontos, duracao, data.session_id);
+    }
+
+    console.log('[Memory] Score salvo após tempo esgotado:', { pontos, duracao });
+});
+
 // Verificar autenticação ao carregar a página
 (async function init() {
     usuarioLogado = await verificarAutenticacao();
     if (!usuarioLogado) return;
     console.log('Usuário autenticado:', usuarioLogado.username);
+    detectarDesafioAtivo(); // FASE 4: Detectar modo desafio
     initAudioControls();
     initExitButton();
 })();

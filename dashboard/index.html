@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../assets/css/dashboard.css" />
+  <link rel="stylesheet" href="../assets/css/notifications.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
   <header class="sp-header">
@@ -18,6 +20,10 @@
       </div>
 
       <div class="userbox">
+        <button class="notification-bell" id="notification-bell" style="position: relative; margin-right: 15px;">
+          <i class="fas fa-bell"></i>
+          <span class="notification-badge" id="notification-badge" style="display: none;">0</span>
+        </button>
         <div class="user-info">
           <span class="user-greet">Olá, <strong id="sp-username">Jogador</strong>!</span>
           <button id="sp-logout" class="btn btn-ghost" title="Sair">Sair</button>
@@ -87,6 +93,46 @@
             <a class="btn" href="../leaderboard/">Ver Ranking</a>
           </div>
         </article>
+
+        <!-- Card Meus Desafios (mostrado via JS se houver desafios) -->
+        <article class="card" id="my-challenges-card" style="display: none;">
+          <div class="card-illustration">🎯</div>
+          <div class="card-content">
+            <h3>Meus Desafios</h3>
+            <p id="challenges-summary">Carregando...</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-primary" id="view-challenges-btn">
+              <i class="fas fa-trophy"></i> Ver Desafios
+            </button>
+          </div>
+        </article>
+
+        <!-- Card Ativar Modo Professor (mostrado via JS se NÃO for professor) -->
+        <article class="card" id="become-teacher-card" style="display: none;">
+          <div class="card-illustration">🎓</div>
+          <div class="card-content">
+            <h3>Tornar-se Professor</h3>
+            <p>Ative o modo professor para criar turmas, gerenciar alunos e acompanhar o progresso de cada estudante.</p>
+          </div>
+          <div class="card-actions">
+            <button class="btn btn-primary" id="activate-teacher-btn">
+              <i class="fas fa-graduation-cap"></i> Ativar Modo Professor
+            </button>
+          </div>
+        </article>
+
+        <!-- Card Modo Professor (mostrado via JS se is_teacher) -->
+        <article class="card" id="teacher-mode-card" style="display: none;">
+          <div class="card-illustration">🎓</div>
+          <div class="card-content">
+            <h3>Modo Professor</h3>
+            <p>Gerencie suas turmas, adicione alunos e acompanhe o progresso de cada estudante em tempo real.</p>
+          </div>
+          <div class="card-actions">
+            <a class="btn btn-primary" href="../teacher/">Abrir Dashboard</a>
+          </div>
+        </article>
       </div>
     </section>
   </main>
@@ -97,6 +143,25 @@
     </div>
   </footer>
 
+  <!-- Modal: Meus Desafios -->
+  <div class="modal" id="challenges-modal" style="display: none;">
+    <div class="modal-overlay"></div>
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="modal-header">
+        <h2><i class="fas fa-trophy"></i> Meus Desafios</h2>
+        <button class="modal-close" id="close-challenges-modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="challenges-modal-body">
+        <div class="loading">
+          <i class="fas fa-spinner fa-spin"></i> Carregando desafios...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../assets/js/notifications.js"></script>
   <script src="../assets/js/dashboard.js"></script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 <?php
 include('config.php');
 
+// Definir timezone padrão para São Paulo/Brasil
+date_default_timezone_set('America/Sao_Paulo');
+
 function get_pdo(): PDO {
   static $pdo = null;
   if ($pdo) return $pdo;

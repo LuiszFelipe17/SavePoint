@@ -15,6 +15,65 @@ audioManager.loadSound('wrong', '../assets/sounds/match-fail.mp3');
 audioManager.loadSound('skip', '../assets/sounds/timeout.mp3');
 audioManager.loadSound('warning', '../assets/sounds/time-warning.mp3');
 
+// Sistema de Toast Notifications
+function showToast(message, type = 'info', duration = 3000) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+
+    const icons = {
+        success: 'fa-check-circle',
+        error: 'fa-times-circle',
+        warning: 'fa-exclamation-triangle',
+        info: 'fa-info-circle'
+    };
+
+    const titles = {
+        success: 'Sucesso!',
+        error: 'Ops!',
+        warning: 'Atenção!',
+        info: 'Informação'
+    };
+
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fas ${icons[type]}"></i>
+        </div>
+        <div class="toast-content">
+            <div class="toast-title">${titles[type]}</div>
+            <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" aria-label="Fechar">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="toast-progress" style="animation-duration: ${duration}ms;"></div>
+    `;
+
+    container.appendChild(toast);
+
+    // Fechar ao clicar no X
+    const closeBtn = toast.querySelector('.toast-close');
+    closeBtn.addEventListener('click', () => {
+        removeToast(toast);
+    });
+
+    // Auto-remover após duração
+    setTimeout(() => {
+        removeToast(toast);
+    }, duration);
+}
+
+function removeToast(toast) {
+    toast.classList.add('hiding');
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.parentElement.removeChild(toast);
+        }
+    }, 300);
+}
+
 // Verificar autenticação
 async function verificarAutenticacao() {
     try {
@@ -56,16 +115,55 @@ async function salvarPontuacao() {
 
         if (data.ok) {
             console.log('Pontuação salva:', data);
+
+            // FASE 4: Se for um desafio, enviar também para a API de desafios
+            if (window.challengeHelper && window.challengeHelper.isActive()) {
+                await window.challengeHelper.submitScore(pontuacao, tempoTotalJogo, data.session_id);
+            }
         }
     } catch (error) {
         console.error('Erro ao salvar pontuação:', error);
     }
 }
 
+// BUG FIX #3: Listener para tempo esgotado do desafio
+window.addEventListener('challengeTimeExpired', async (event) => {
+    console.log('[Português] Tempo do desafio esgotado!', event.detail);
+
+    // Parar o timer do jogo
+    if (intervaloTimer) {
+        clearInterval(intervaloTimer);
+        intervaloTimer = null;
+    }
+
+    // Calcular pontuação final
+    const pontosFinal = pontuacao;
+    const duracaoJogo = tempoTotalJogo;
+
+    // Salvar pontuação
+    await salvarPontuacao(pontosFinal, duracaoJogo);
+
+    // Se está em modo desafio, submeter via challengeHelper
+    if (window.challengeHelper && window.challengeHelper.isActive()) {
+        // O submitScore já é chamado dentro de salvarPontuacao quando há desafio ativo
+        console.log('[Português] Score já submetido via salvarPontuacao');
+    }
+
+    // Mostrar toast
+    showToast('Tempo do desafio esgotado! Sua pontuação foi salva automaticamente.', 'warning', 5000);
+
+    console.log('[Português] Score salvo após tempo esgotado:', { pontosFinal, duracaoJogo });
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Verificar autenticação primeiro
     const autenticado = await verificarAutenticacao();
     if (!autenticado) return;
+
+    // FASE 4: Detectar modo desafio
+    if (window.challengeHelper) {
+        window.challengeHelper.detectActiveChallenge();
+    }
 
     const containerPalavra = document.getElementById('word-container');
     const textoDica = document.getElementById('hint-text');
@@ -144,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         } catch (error) {
             console.error('Erro ao carregar nova palavra:', error);
-            alert('Não foi possível carregar o jogo. Verifique sua conexão ou tente mais tarde.');
+            showToast('Não foi possível carregar o jogo. Verifique sua conexão ou tente mais tarde.', 'error', 4000);
         }
     }
 
@@ -161,7 +259,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (tempoRestante <= 0) {
             clearInterval(intervaloTimer);
             audioManager.play('skip');
-            alert("Tempo esgotado! Palavra pulada.");
+            showToast("Tempo esgotado! Palavra pulada.", 'warning', 2500);
             palavrasPuladas++;
             carregarNovaPalavra();
         }
@@ -206,7 +304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const vaziosPreenchidos = containerPalavra.querySelectorAll('.blank[data-filled]');
 
         if (vaziosPreenchidos.length !== todosOsVazios.length) {
-            alert("Por favor, preencha todos os espaços!");
+            showToast("Por favor, preencha todos os espaços!", 'warning', 2500);
             return;
         }
 
@@ -219,7 +317,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (estaCorreto) {
             audioManager.play('correct');
-            alert("Parabéns, você acertou!");
+            showToast("Parabéns, você acertou! +" + (10 + tempoRestante) + " pontos", 'success', 2500);
             clearInterval(intervaloTimer);
             pontuacao += 10 + tempoRestante;
             palavrasCompletadas++;
@@ -227,7 +325,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             carregarNovaPalavra();
         } else {
             audioManager.play('wrong');
-            alert("Incorreto. Tente novamente!");
+            showToast("Incorreto. Tente novamente!", 'error', 2500);
             vaziosPreenchidos.forEach(spanVazio => {
                 devolverLetraAoBanco({ target: spanVazio });
             });
@@ -236,7 +334,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function pularPalavra() {
         audioManager.play('skip');
-        alert("Palavra pulada.");
+        const penalidade = pontuacao > 2 ? 2 : 0;
+        showToast(penalidade > 0 ? "Palavra pulada. -2 pontos" : "Palavra pulada.", 'info', 2000);
         if (pontuacao > 2) {
             pontuacao -= 2;
         }

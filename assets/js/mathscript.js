@@ -31,6 +31,7 @@ let score = 0;
 let nivelSelecionado = "soma";
 let currentRoundOperation = "";
 let usuarioLogado = null;
+let gameStartTime = null; // FASE 4: Rastrear tempo de jogo
 
 const SCORE_TO_UNLOCK_EXTREME = 25;
 
@@ -41,6 +42,12 @@ const audioManager = new AudioManager();
 audioManager.loadSound('pop', '../assets/sounds/balloon-pop.mp3');
 audioManager.loadSound('correct', '../assets/sounds/correct-answer.mp3');
 audioManager.loadSound('gameover', '../assets/sounds/game-over.mp3');
+
+// FASE 4: Calcular duração do jogo em segundos
+function calcularDuracaoJogo() {
+    if (!gameStartTime) return 0;
+    return Math.floor((Date.now() - gameStartTime) / 1000);
+}
 
 // Verificar autenticação
 async function verificarAutenticacao() {
@@ -71,7 +78,7 @@ async function salvarPontuacao(pontos, status) {
             body: JSON.stringify({
                 game_code: 'math',
                 score: pontos,
-                duration_seconds: null,
+                duration_seconds: calcularDuracaoJogo(), // FASE 4: Tempo real de jogo
                 operation_type: nivelSelecionado,
                 status: status,
                 metadata: {
@@ -83,6 +90,14 @@ async function salvarPontuacao(pontos, status) {
 
         const data = await res.json();
         console.log('Pontuação salva:', data);
+
+        // FASE 4: Se for um desafio, enviar também para a API de desafios
+        // Math é contínuo, então envia sempre que salva (não só em 'completed')
+        if (window.challengeHelper && window.challengeHelper.isActive()) {
+            const duration = calcularDuracaoJogo();
+            await window.challengeHelper.submitScore(pontos, duration, data.session_id);
+        }
+
         return data;
     } catch (err) {
         console.error('Erro ao salvar pontuação:', err);
@@ -124,9 +139,10 @@ function startGame() {
 
   isGameOver = false;
   score = 0;
+  gameStartTime = Date.now(); // FASE 4: Iniciar timer
   placarElemento.textContent = `Pontos: ${score}`;
   document.querySelectorAll('.balao').forEach(b => b.remove());
-  
+
   iniciarRodada();
 }
 
@@ -394,15 +410,49 @@ function initExitButton() {
     }
 }
 
+// BUG FIX #3: Listener para tempo esgotado do desafio
+window.addEventListener('challengeTimeExpired', async (event) => {
+    console.log('[Math] Tempo do desafio esgotado!', event.detail);
+
+    // Forçar fim do jogo
+    if (!isGameOver) {
+        isGameOver = true;
+
+        // Salvar score atual
+        const pontos = score;
+        const duracao = calcularDuracaoJogo();
+        const status = 'completed';
+
+        // Salvar no banco
+        const data = await salvarPartida(pontos, duracao, status);
+
+        // Se está em modo desafio, submeter score
+        if (window.challengeHelper && window.challengeHelper.isActive() && data && data.session_id) {
+            await window.challengeHelper.submitScore(pontos, duracao, data.session_id);
+        }
+
+        console.log('[Math] Score salvo após tempo esgotado:', { pontos, duracao });
+
+        // Limpar balões e mostrar game over
+        baloes = [];
+        exibirGameOver(pontos);
+    }
+});
+
 // Inicialização do jogo
 (async function init() {
     usuarioLogado = await verificarAutenticacao();
     if (!usuarioLogado) return;
     console.log('Usuário autenticado:', usuarioLogado.username);
-    
+
+    // FASE 4: Detectar modo desafio
+    if (window.challengeHelper) {
+        window.challengeHelper.detectActiveChallenge();
+    }
+
     const totalScore = await buscarPontuacaoTotal();
-    checkAndUnlockExtremeLevel(totalScore); 
-    
+    checkAndUnlockExtremeLevel(totalScore);
+
     initAudioControls();
     initExitButton();
 })();

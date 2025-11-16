@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sala de Espera - SavePoint</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .waiting-room {
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .challenge-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .challenge-info {
+            background: #f9fafb;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .info-value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .countdown {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 30px 0;
+        }
+
+        .participants {
+            margin: 30px 0;
+        }
+
+        .participants-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+
+        .participants-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .participant {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .participant.ready {
+            background: #10b981;
+        }
+
+        .status-message {
+            font-size: 18px;
+            color: #6b7280;
+            margin: 20px 0;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Fredoka', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #667eea;
+        }
+
+        .loading i {
+            font-size: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="waiting-room">
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando desafio...</p>
+        </div>
+
+        <div id="challenge-content" style="display: none;">
+            <div class="challenge-icon">
+                🏆
+            </div>
+            <h1 id="challenge-title">-</h1>
+            <p class="status-message" id="status-message">Aguardando início...</p>
+
+            <div class="challenge-info">
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-gamepad"></i> Jogo:</span>
+                    <span class="info-value" id="game-name">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-clock"></i> Duração:</span>
+                    <span class="info-value" id="duration">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-signal"></i> Dificuldade:</span>
+                    <span class="info-value" id="difficulty">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label"><i class="fas fa-hourglass-start"></i> Inicia em:</span>
+                    <span class="info-value countdown" id="countdown">--:--</span>
+                </div>
+            </div>
+
+            <div class="participants">
+                <div class="participants-title">
+                    <i class="fas fa-users"></i> Participantes Prontos: <span id="ready-count">0</span>/<span id="total-count">0</span>
+                </div>
+                <div class="participants-list" id="participants-list">
+                    <!-- Será preenchido via JS -->
+                </div>
+            </div>
+
+            <button id="start-btn" class="btn" disabled>
+                <i class="fas fa-rocket"></i> Aguarde o início...
+            </button>
+            <br><br>
+            <button id="leave-btn" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+            </button>
+        </div>
+
+        <div id="error-content" style="display: none;">
+            <div class="error">
+                <h2>❌ Erro</h2>
+                <p id="error-message"></p>
+            </div>
+            <button onclick="window.location.href='../dashboard/'" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Voltar ao Dashboard
+            </button>
+        </div>
+    </div>
+
+    <script src="challenge.js"></script>
+</body>
+</html>
